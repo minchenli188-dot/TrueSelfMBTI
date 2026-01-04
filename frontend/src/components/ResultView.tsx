@@ -150,18 +150,36 @@ export function ResultView({
   };
 
   const handleCopy = async () => {
-    // Build share text, excluding cognitive stack for shallow mode
-    const cognitiveInfo = !isShallowMode && resultData.cognitive_stack 
-      ? `\n认知功能：${resultData.cognitive_stack.join(" → ")}` 
-      : "";
+    // Build result text based on depth mode
+    let resultText = "";
     
-    const shareText = `🎭 我在 MBTI Assistant 完成了性格测试！
+    if (isShallowMode) {
+      // Shallow mode: Show temperament color only
+      resultText = `我的气质类型：${resultData.type_name}（${groupInfo.name}）`;
+    } else if (isDeepMode) {
+      // Deep mode: Show full MBTI + cognitive stack + development level
+      const cognitiveStack = resultData.cognitive_stack 
+        ? `\n认知功能栈：${resultData.cognitive_stack.join(" → ")}`
+        : "";
+      const devLevel = resultData.development_level
+        ? `\n发展阶段：${DEVELOPMENT_LEVEL_INFO[resultData.development_level]?.title || resultData.development_level}`
+        : "";
+      resultText = `我的 MBTI 类型：${resultData.mbti_type}（${resultData.type_name}）${cognitiveStack}${devLevel}`;
+    } else {
+      // Standard mode: Show MBTI type and group
+      const cognitiveStack = resultData.cognitive_stack 
+        ? `\n认知功能栈：${resultData.cognitive_stack.join(" → ")}`
+        : "";
+      resultText = `我的 MBTI 类型：${resultData.mbti_type}（${resultData.type_name}）${cognitiveStack}`;
+    }
+    
+    const shareText = `和朋友聊天一样的 MBTI 测试
+聊着聊着，就发现了真正的自己
 
-我的结果是：${resultData.mbti_type} - ${resultData.type_name}
-所属群体：${groupInfo.name}
-置信度：${resultData.confidence_score}%${cognitiveInfo}
+这是我的结果，你也来试试
+${resultText}
 
-快来发现你的真实自我 👉 [链接]`;
+TrueSelfMBTI.com`;
 
     try {
       await navigator.clipboard.writeText(shareText);
