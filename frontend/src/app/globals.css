@@ -1,0 +1,260 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom base styles */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply scroll-smooth;
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-background-secondary;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+    transition: background-color 0.2s;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-foreground-subtle;
+  }
+
+  /* Selection color */
+  ::selection {
+    @apply bg-analyst/30 text-foreground;
+  }
+}
+
+/* Custom component styles */
+@layer components {
+  /* Chat bubble base styles */
+  .chat-bubble {
+    @apply relative px-4 py-3 rounded-2xl max-w-[85%];
+    @apply transition-all duration-300 ease-out-expo;
+  }
+
+  .chat-bubble-user {
+    @apply bg-analyst/20 border border-analyst/30;
+    @apply ml-auto rounded-br-sm;
+  }
+
+  .chat-bubble-assistant {
+    @apply bg-background-tertiary border border-border;
+    @apply mr-auto rounded-bl-sm;
+  }
+
+  /* Gradient text */
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-analyst via-diplomat to-explorer;
+  }
+
+  /* Glass morphism effect */
+  .glass {
+    @apply bg-background-secondary/80 backdrop-blur-md;
+    @apply border border-border/50;
+  }
+
+  /* Glow effects for MBTI groups */
+  .glow-analyst {
+    @apply shadow-glow-analyst;
+  }
+
+  .glow-diplomat {
+    @apply shadow-glow-diplomat;
+  }
+
+  .glow-sentinel {
+    @apply shadow-glow-sentinel;
+  }
+
+  .glow-explorer {
+    @apply shadow-glow-explorer;
+  }
+
+  /* Animated gradient background */
+  .animated-gradient {
+    background: linear-gradient(
+      -45deg,
+      theme("colors.analyst.DEFAULT"),
+      theme("colors.diplomat.DEFAULT"),
+      theme("colors.sentinel.DEFAULT"),
+      theme("colors.explorer.DEFAULT")
+    );
+    background-size: 400% 400%;
+    @apply animate-gradient-x;
+  }
+
+  /* Button styles */
+  .btn-primary {
+    @apply inline-flex items-center justify-center;
+    @apply px-6 py-3 rounded-xl font-medium;
+    @apply bg-analyst text-white;
+    @apply transition-all duration-300 ease-out-expo;
+    @apply hover:shadow-glow-analyst hover:scale-[1.02];
+    @apply active:scale-[0.98];
+    @apply disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center;
+    @apply px-6 py-3 rounded-xl font-medium;
+    @apply bg-background-tertiary border border-border;
+    @apply transition-all duration-300 ease-out-expo;
+    @apply hover:border-foreground-subtle hover:bg-background-secondary;
+    @apply active:scale-[0.98];
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Input styles */
+  .input-chat {
+    @apply w-full px-4 py-3 rounded-xl;
+    @apply bg-background-secondary border border-border;
+    @apply text-foreground placeholder:text-foreground-subtle;
+    @apply transition-all duration-300 ease-out-expo;
+    @apply focus:outline-none focus:border-analyst focus:shadow-glow-analyst/20;
+    @apply resize-none;
+  }
+}
+
+/* Custom utility styles */
+@layer utilities {
+  /* Typing indicator animation */
+  .typing-dot {
+    @apply w-2 h-2 rounded-full bg-foreground-muted;
+    animation: typingBounce 1.4s infinite ease-in-out both;
+  }
+
+  .typing-dot:nth-child(1) {
+    animation-delay: -0.32s;
+  }
+
+  .typing-dot:nth-child(2) {
+    animation-delay: -0.16s;
+  }
+
+  @keyframes typingBounce {
+    0%,
+    80%,
+    100% {
+      transform: scale(0);
+    }
+    40% {
+      transform: scale(1);
+    }
+  }
+
+  /* Focus visible for accessibility */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2;
+    @apply focus-visible:ring-analyst focus-visible:ring-offset-2;
+    @apply focus-visible:ring-offset-background;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Text balance for headings */
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Print styles for report download */
+@media print {
+  /* Reset background and colors for printing */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    background: white !important;
+    color: #1a1a1a !important;
+  }
+
+  /* Hide non-essential elements */
+  header,
+  .print\\:hidden,
+  button:not(.print-keep),
+  nav,
+  footer {
+    display: none !important;
+  }
+
+  /* Show the main content */
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Style the result view for print */
+  .glass {
+    background: white !important;
+    border: 1px solid #e5e5e5 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+
+  /* Ensure text is readable */
+  .text-foreground,
+  .text-foreground-muted,
+  .text-foreground-secondary {
+    color: #333 !important;
+  }
+
+  /* Style headings */
+  h1, h2, h3, h4, h5, h6 {
+    color: #1a1a1a !important;
+  }
+
+  /* Remove animations */
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Page setup */
+  @page {
+    margin: 1.5cm;
+    size: A4;
+  }
+
+  /* Avoid breaking inside important sections */
+  .mb-8,
+  .p-4,
+  .p-5,
+  .p-6 {
+    break-inside: avoid;
+  }
+}
+
+
+
+
+
