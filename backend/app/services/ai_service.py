@@ -812,7 +812,6 @@ class AIService:
 - 置信度: {confidence_score}%
 - 分析深度: 标准模式
 {f"- 认知功能栈: {' → '.join(cognitive_stack)}" if cognitive_stack else ""}
-{f"- 发展阶段: {development_level}" if development_level else ""}
 
 ## 报告要求
 写一份有深度又温暖的分析报告：
@@ -824,6 +823,8 @@ class AIService:
 3. **性格优势**：这个类型的核心优势
 4. **成长方向**：温和地提出一些发展建议
 5. **结尾**：肯定用户的独特性格
+
+注意：标准模式不需要分析发展阶段，那是深度模式的内容。
 
 ## 格式要求
 - 用 **加粗** 标注关键术语和类型名称

@@ -168,10 +168,10 @@ export default function HomePage() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.7 }}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1] mb-4"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-analyst/20 via-diplomat/20 to-explorer/20 border border-analyst/30 mb-4"
                 >
-                  <Award className="w-4 h-4 text-foreground-muted" />
-                  <span className="text-sm text-foreground-muted font-medium">市面上最专业的 MBTI 测试</span>
+                  <Award className="w-4 h-4 text-analyst" />
+                  <span className="text-sm text-foreground font-semibold">市面上最专业的 MBTI 测试</span>
                 </motion.div>
                 <h2 className="font-display text-2xl md:text-3xl mb-3 text-foreground">
                   为什么选择 <span className="text-gradient">TrueSelfMBTI</span>？

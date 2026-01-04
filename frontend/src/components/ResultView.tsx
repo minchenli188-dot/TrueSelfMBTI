@@ -555,7 +555,7 @@ TrueSelfMBTI.com`;
             </span>
           </motion.button>
           <p className="text-center text-xs text-foreground-muted mt-2">
-            基于荣格心理学，深入分析你的认知功能栈与发展阶段
+            想深度拆解认知功能栈？快试试深度模式
           </p>
         </motion.div>
       )}
