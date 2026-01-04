@@ -122,6 +122,7 @@ export interface ChatSessionState {
   // Error handling
   error: string | null;
   lastFailedMessage: string | null;
+  retryCount: number;
 }
 
 export interface ChatSessionActions {
@@ -217,6 +218,7 @@ const initialState: ChatSessionState = {
   generatedImageUrl: null,
   error: null,
   lastFailedMessage: null,
+  retryCount: 0,
 };
 
 // ============================================================
@@ -340,6 +342,7 @@ export function useChatSession(): [ChatSessionState, ChatSessionActions] {
           generatedImageUrl: null,
           error: null,
           lastFailedMessage: null,
+          retryCount: 0,
         });
 
         // Update theme if there's a prediction
@@ -449,7 +452,7 @@ export function useChatSession(): [ChatSessionState, ChatSessionActions] {
         return;
       }
 
-      // Clear any previous error
+      // Clear any previous error (but keep retryCount for tracking)
       setState((prev) => ({
         ...prev,
         error: null,
@@ -530,6 +533,7 @@ export function useChatSession(): [ChatSessionState, ChatSessionActions] {
             resultData: null,
             error: null,
             lastFailedMessage: null,
+            retryCount: 0, // Reset retry count on success
           };
         });
       } catch (err) {
@@ -553,6 +557,7 @@ export function useChatSession(): [ChatSessionState, ChatSessionActions] {
           isTyping: false,
           error: errorMessage,
           lastFailedMessage: messageContent,
+          retryCount: prev.retryCount + 1, // Increment retry count on error
         }));
       }
     },

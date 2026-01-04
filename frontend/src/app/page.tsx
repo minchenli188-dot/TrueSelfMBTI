@@ -387,14 +387,23 @@ export default function HomePage() {
                     <AlertCircle className="w-5 h-5 flex-shrink-0" />
                     <span className="text-sm">{state.error}</span>
                   </div>
-                  <button
-                    onClick={actions.retryLastMessage}
-                    disabled={state.isLoading}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-background-tertiary border border-border hover:border-foreground-subtle transition-colors disabled:opacity-50"
-                  >
-                    <RefreshCw className={`w-4 h-4 ${state.isLoading ? 'animate-spin' : ''}`} />
-                    <span>重试</span>
-                  </button>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={actions.retryLastMessage}
+                      disabled={state.isLoading}
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-background-tertiary border border-border hover:border-foreground-subtle transition-colors disabled:opacity-50"
+                    >
+                      <RefreshCw className={`w-4 h-4 ${state.isLoading ? 'animate-spin' : ''}`} />
+                      <span>重试</span>
+                    </button>
+                    <span className="text-foreground-muted text-sm">或</span>
+                    <button
+                      onClick={() => window.location.reload()}
+                      className="text-sm text-foreground-muted hover:text-foreground underline transition-colors"
+                    >
+                      刷新网页
+                    </button>
+                  </div>
                 </motion.div>
               )}
 
