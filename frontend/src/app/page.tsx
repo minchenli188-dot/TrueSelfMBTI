@@ -168,12 +168,12 @@ export default function HomePage() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.7 }}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-4"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1] mb-4"
                 >
-                  <Award className="w-4 h-4 text-diplomat" />
-                  <span className="text-sm text-diplomat font-medium">市面上最专业的 MBTI 测试</span>
+                  <Award className="w-4 h-4 text-foreground-muted" />
+                  <span className="text-sm text-foreground-muted font-medium">市面上最专业的 MBTI 测试</span>
                 </motion.div>
-                <h2 className="font-display text-2xl md:text-3xl mb-3">
+                <h2 className="font-display text-2xl md:text-3xl mb-3 text-foreground">
                   为什么选择 <span className="text-gradient">TrueSelfMBTI</span>？
                 </h2>
                 <p className="text-foreground-muted text-sm md:text-base">
@@ -188,37 +188,31 @@ export default function HomePage() {
                     icon: MessageCircle, 
                     title: "自然对话", 
                     description: "像和朋友聊天一样，用最自然的方式表达自己",
-                    color: "analyst" 
                   },
                   { 
                     icon: Shield, 
                     title: "荣格理论", 
                     description: "基于卡尔·荣格原型心理学，提供有学术支撑的分析",
-                    color: "sentinel" 
                   },
                   { 
                     icon: Brain, 
                     title: "认知功能分析", 
                     description: "深入分析 8 大认知功能栈，揭示思维运作的底层逻辑",
-                    color: "diplomat" 
                   },
                   { 
                     icon: Sparkles, 
                     title: "个性化结果", 
                     description: "获得独属于你的深度洞察，而非千篇一律的描述",
-                    color: "explorer" 
                   },
                   { 
                     icon: Palette, 
                     title: "专属画像", 
                     description: "AI 生成专属于你的 MBTI 人格视觉肖像",
-                    color: "sentinel" 
                   },
                   { 
                     icon: MessagesSquare, 
                     title: "AI 解答", 
                     description: "测试后与 AI 实时对话，解答关于结果的任何疑问",
-                    color: "analyst" 
                   },
                 ].map((feature, index) => (
                   <motion.div
@@ -226,16 +220,14 @@ export default function HomePage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.75 + index * 0.05 }}
-                    className="p-5 rounded-xl glass"
+                    className="group p-5 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.05] hover:border-white/[0.1] transition-all duration-300"
                   >
                     <div className="flex items-start gap-4">
-                      <div
-                        className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-${feature.color}/20`}
-                      >
-                        <feature.icon className={`w-5 h-5 text-${feature.color}`} />
+                      <div className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-white/[0.06] group-hover:bg-white/[0.1] transition-colors">
+                        <feature.icon className="w-5 h-5 text-foreground-muted group-hover:text-foreground transition-colors" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-medium mb-1">{feature.title}</h3>
+                        <h3 className="font-medium mb-1 text-foreground">{feature.title}</h3>
                         <p className="text-xs text-foreground-muted leading-relaxed">
                           {feature.description}
                         </p>
