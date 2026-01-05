@@ -40,11 +40,11 @@ const DEPTH_OPTIONS: Array<{
   {
     depth: "standard",
     title: "标准模式",
-    subtitle: "确定完整 MBTI 类型",
+    subtitle: "确定完整人格类型",
     duration: "15 题",
     icon: Brain,
     color: "#4298b4",
-    description: "通过深入对话，确定你的 4 字母 MBTI 类型（如 INTJ、ENFP 等）",
+    description: "通过深入对话，确定你的 4 字母人格类型（如 INTJ、ENFP 等）",
     features: [
       { icon: Palette, label: "专属画像", tier: "standard" },
       { icon: MessageSquare, label: "AI 解答", tier: "standard" },

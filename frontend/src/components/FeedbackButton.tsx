@@ -88,7 +88,7 @@ export function FeedbackButton({
           </div>
           <span className="text-sm font-medium">结果准确度</span>
           <span className="text-xs text-foreground-subtle">
-            评价你的MBTI结果
+            评价你的测试结果
           </span>
         </button>
         

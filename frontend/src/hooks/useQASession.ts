@@ -84,7 +84,7 @@ export function getPresetQuestions(
     questions.push({
       id: "letters",
       label: "解读四个字母",
-      question: `请详细解读我的MBTI类型 ${mbtiType} 中每个字母的含义：\n1. ${mbtiType[0]}（能量方向）代表什么？\n2. ${mbtiType[1]}（信息获取）代表什么？\n3. ${mbtiType[2]}（决策方式）代表什么？\n4. ${mbtiType[3]}（生活方式）代表什么？\n这四个维度如何共同塑造了我的性格？`,
+      question: `请详细解读我的人格类型 ${mbtiType} 中每个字母的含义：\n1. ${mbtiType[0]}（能量方向）代表什么？\n2. ${mbtiType[1]}（信息获取）代表什么？\n3. ${mbtiType[2]}（决策方式）代表什么？\n4. ${mbtiType[3]}（生活方式）代表什么？\n这四个维度如何共同塑造了我的性格？`,
       icon: "🔤",
     });
   }

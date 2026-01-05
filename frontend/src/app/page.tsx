@@ -15,6 +15,7 @@ import { ResultView } from "@/components/ResultView";
 import { DepthSelector } from "@/components/DepthSelector";
 import { AIQAView } from "@/components/AIQAView";
 import { FeedbackButton } from "@/components/FeedbackButton";
+import { FeatureDemo, type FeatureKey } from "@/components/FeatureDemo";
 import { useTheme } from "@/context/ThemeContext";
 
 // Wrapper component to handle Suspense for useSearchParams
@@ -46,6 +47,7 @@ function HomePageContent() {
   const [showQAView, setShowQAView] = useState(false);
   const [pendingUpgrade, setPendingUpgrade] = useState<"standard" | "deep" | null>(null);
   const upgradeTriggeredRef = useRef(false);
+  const [activeFeatureDemo, setActiveFeatureDemo] = useState<FeatureKey | null>(null);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -170,7 +172,7 @@ function HomePageContent() {
               className="mb-6"
             >
               <span className="font-display text-2xl md:text-3xl tracking-wide text-gradient">
-                TrueSelfMBTI.com
+                TrueSelf16.com
               </span>
             </motion.div>
 
@@ -233,10 +235,10 @@ function HomePageContent() {
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-analyst/20 via-diplomat/20 to-explorer/20 border border-analyst/30 mb-4"
                 >
                   <Award className="w-4 h-4 text-analyst" />
-                  <span className="text-sm text-foreground font-semibold">市面上最专业的 MBTI 测试</span>
+                  <span className="text-sm text-foreground font-semibold">市面上最专业的 16型人格 测试</span>
                 </motion.div>
                 <h2 className="font-display text-2xl md:text-3xl mb-3 text-foreground">
-                  为什么选择 <span className="text-gradient">TrueSelfMBTI</span>？
+                  为什么选择 <span className="text-gradient">TrueSelf16</span>？
                 </h2>
                 <p className="text-foreground-muted text-sm md:text-base">
                   基于荣格心理学理论打造的专业级人格分析平台
@@ -250,43 +252,72 @@ function HomePageContent() {
                     icon: MessageCircle, 
                     title: "自然对话", 
                     description: "像和朋友聊天一样，用最自然的方式表达自己",
+                    demoKey: "natural-chat" as FeatureKey,
+                    color: "#4298b4", // Blue
                   },
                   { 
                     icon: Shield, 
                     title: "荣格理论", 
                     description: "基于卡尔·荣格原型心理学，提供有学术支撑的分析",
+                    demoKey: "jung-theory" as FeatureKey,
+                    color: "#88619a", // Purple
                   },
                   { 
                     icon: Brain, 
                     title: "认知功能分析", 
                     description: "深入分析 8 大认知功能栈，揭示思维运作的底层逻辑",
+                    demoKey: "cognitive-functions" as FeatureKey,
+                    color: "#e4ae3a", // Gold
                   },
                   { 
                     icon: Sparkles, 
                     title: "个性化结果", 
                     description: "获得独属于你的深度洞察，而非千篇一律的描述",
+                    demoKey: "personalized-results" as FeatureKey,
+                    color: "#33a474", // Green
                   },
                   { 
                     icon: Palette, 
                     title: "专属画像", 
-                    description: "AI 生成专属于你的 MBTI 人格视觉肖像",
+                    description: "AI 生成专属于你的人格视觉肖像",
+                    demoKey: "portrait" as FeatureKey,
+                    color: "#e4ae3a", // Gold
                   },
                   { 
                     icon: MessagesSquare, 
                     title: "AI 解答", 
                     description: "测试后与 AI 实时对话，解答关于结果的任何疑问",
+                    demoKey: "ai-qa" as FeatureKey,
+                    color: "#4298b4", // Blue
                   },
                 ].map((feature, index) => (
-                  <motion.div
+                  <motion.button
                     key={feature.title}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.75 + index * 0.05 }}
-                    className="group p-5 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.05] hover:border-white/[0.1] transition-all duration-300"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setActiveFeatureDemo(feature.demoKey)}
+                    className="group p-5 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.05] transition-all duration-300 text-left cursor-pointer"
+                    style={{ 
+                      borderColor: `${feature.color}20`,
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = `${feature.color}40`;
+                      e.currentTarget.style.backgroundColor = `${feature.color}10`;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = `${feature.color}20`;
+                      e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.03)';
+                    }}
                   >
                     <div className="flex items-start gap-4">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-white/[0.06] group-hover:bg-white/[0.1] transition-colors">
-                        <feature.icon className="w-5 h-5 text-foreground-muted group-hover:text-foreground transition-colors" />
+                      <div 
+                        className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-colors"
+                        style={{ backgroundColor: `${feature.color}20` }}
+                      >
+                        <feature.icon className="w-5 h-5 transition-colors" style={{ color: feature.color }} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-medium mb-1 text-foreground">{feature.title}</h3>
@@ -295,9 +326,15 @@ function HomePageContent() {
                         </p>
                       </div>
                     </div>
-                  </motion.div>
+                  </motion.button>
                 ))}
               </div>
+
+              {/* Feature Demo Modal */}
+              <FeatureDemo 
+                feature={activeFeatureDemo} 
+                onClose={() => setActiveFeatureDemo(null)} 
+              />
 
             </div>
           </motion.div>
@@ -336,7 +373,7 @@ function HomePageContent() {
                 <span>重新开始</span>
               </button>
               <h1 className="font-display text-xl text-gradient">
-                TrueSelfMBTI
+                TrueSelf16
               </h1>
               <div className="w-20" />
             </div>
@@ -385,7 +422,7 @@ function HomePageContent() {
                 <span className="hidden sm:inline">退出</span>
               </button>
               <h1 className="font-display text-lg text-gradient">
-                TrueSelfMBTI
+                TrueSelf16
               </h1>
               <div className="w-16" />
             </div>

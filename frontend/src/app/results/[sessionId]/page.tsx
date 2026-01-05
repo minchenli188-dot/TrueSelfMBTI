@@ -432,7 +432,7 @@ export default function ResultsPage() {
                 <span>首页</span>
               </button>
               <h1 className="font-display text-xl text-gradient">
-                TrueSelfMBTI
+                TrueSelf16
               </h1>
               <div className="w-20" />
             </div>

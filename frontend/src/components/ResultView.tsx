@@ -152,7 +152,7 @@ export function ResultView({
     // Create a temporary link element
     const link = document.createElement('a');
     link.href = generatedImageUrl;
-    link.download = `${resultData.mbti_type}_TrueSelfMBTI.png`;
+    link.download = `${resultData.mbti_type}_TrueSelf16.png`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -193,20 +193,20 @@ export function ResultView({
       // Quick/Shallow mode: Show temperament color
       const colorInfo = COLOR_EMOJI_MAP[resultData.mbti_type] || { emoji: "🌈", name: resultData.mbti_type };
       shareText = `我刚用了一种
-像和朋友聊天一样的 MBTI 测试
+像和朋友聊天一样的人格测试
 
 这是我的性格颜色
 
 ${colorInfo.emoji} ${colorInfo.name}
 
 你会是什么颜色？
-TrueSelfMBTI.com`;
+TrueSelf16.com`;
     } else if (isDeepMode) {
       // Deep mode: Show MBTI type + development stage
       const devLevelTitle = resultData.development_level
         ? DEVELOPMENT_LEVEL_INFO[resultData.development_level]?.title || resultData.development_level
         : "";
-      shareText = `不是所有 MBTI
+      shareText = `不是所有人格类型
 都在同一个阶段
 
 我的结果是
@@ -214,16 +214,16 @@ TrueSelfMBTI.com`;
 ${resultData.mbti_type} · ${groupInfo.name}
 发展阶段：${devLevelTitle}
 
-TrueSelfMBTI.com`;
+TrueSelf16.com`;
     } else {
       // Standard mode: Show MBTI type and group
-      shareText = `和朋友聊天一样的 MBTI 测试
+      shareText = `和朋友聊天一样的人格测试
 聊着聊着，就发现了真正的自己
 
 我的结果是
 
 ${resultData.mbti_type} · ${groupInfo.name}
-TrueSelfMBTI.com`;
+TrueSelf16.com`;
     }
 
     try {
@@ -539,7 +539,7 @@ TrueSelfMBTI.com`;
               ) : (
                 <>
                   <ArrowRight className="w-5 h-5" />
-                  <span>继续探索完整 MBTI 类型</span>
+                  <span>继续探索完整人格类型</span>
                   <Sparkles className="w-5 h-5" />
                 </>
               )}
@@ -551,7 +551,7 @@ TrueSelfMBTI.com`;
             </span>
           </motion.button>
           <p className="text-center text-xs text-foreground-muted mt-2">
-            保留当前对话，继续完成标准模式测试，获取 4 字母 MBTI 类型
+            保留当前对话，继续完成标准模式测试，获取 4 字母人格类型
           </p>
         </motion.div>
       )}

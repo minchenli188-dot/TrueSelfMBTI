@@ -796,6 +796,71 @@ async def generate_image(
         }
 
 
+@router.post("/demo-image")
+async def generate_demo_image(
+    mbti_type: str = "INFP",
+    gender: str = "female",
+):
+    """
+    Generate a demo image for showcase purposes.
+    
+    This endpoint generates a beautiful Pop Mart style character for the landing page demo.
+    No session required - uses predefined characteristics for the demo.
+    """
+    from app.services.image_generator import image_generator, POP_MART_TEMPLATE, MBTI_COLOR_THEMES
+    
+    # Custom profile for demo - a beautiful character without display case frame
+    if gender == "female":
+        demo_profile = {
+            "character_appearance": "a cute young woman with long flowing wavy hair in soft brown color with pink flower accessories, big sparkling eyes with long eyelashes, rosy cheeks, warm gentle smile, delicate feminine features, soft and dreamy expression",
+            "outfit_style": "elegant cream-colored cozy knit sweater, simple gold necklace with a small heart pendant, comfortable light blue jeans, brown leather satchel bag",
+            "action_pose": "sitting gracefully on a stack of vintage books, one hand holding an open journal with a pen, looking up thoughtfully with a gentle smile as if inspired by a beautiful idea",
+            "floating_elements": ["blooming pink peonies", "floating origami paper cranes", "soft glowing golden stars", "vintage polaroid photos floating around"],
+            "personality_keywords": ["gentle", "creative", "dreamy"],
+            "unique_details": "NO display case or glass frame around the character. Clean white background. Soft pastel color palette with romantic aesthetic, subtle pink flower petals floating around, warm golden hour lighting, ethereal and whimsical atmosphere. The character should be displayed directly without any box or frame enclosure."
+        }
+    else:
+        demo_profile = {
+            "character_appearance": "a cool young man with stylish messy black hair, sharp confident eyes with a slight smirk, wearing headphones around neck, intelligent and strategic expression",
+            "outfit_style": "modern dark navy jacket over black hoodie, dark pants, stylish sneakers, tech-savvy appearance",
+            "action_pose": "standing confidently with one hand touching a floating holographic data screen, the other hand in pocket, looking focused and determined",
+            "floating_elements": ["holographic data screens with brain icons", "floating geometric blue cubes", "golden shield badge", "certificate with ribbon", "comedy/drama mask"],
+            "personality_keywords": ["strategic", "confident", "intelligent"],
+            "unique_details": "NO display case or glass frame around the character. Clean white/light gray background. Cool blue tech aesthetic with subtle glow effects, modern and sophisticated atmosphere. The character should be displayed directly without any box or frame enclosure."
+        }
+    
+    try:
+        # Generate the image using the custom profile
+        image_url, _ = await image_generator.generate_personality_avatar(
+            mbti_type=mbti_type,
+            conversation_history=None,
+            type_name="调停者",
+            confidence=92,
+            stored_profile=demo_profile,
+        )
+        
+        if image_url:
+            return {
+                "status": "success",
+                "message": f"Demo {mbti_type} avatar generated successfully!",
+                "image_url": image_url,
+            }
+        else:
+            return {
+                "status": "error",
+                "message": "Failed to generate demo image.",
+                "image_url": None,
+            }
+            
+    except Exception as e:
+        logger.error("Demo image generation failed: %s", e)
+        return {
+            "status": "error",
+            "message": f"Demo image generation failed: {str(e)}",
+            "image_url": None,
+        }
+
+
 @router.get("/history/{session_id}")
 async def get_chat_history(
     session_id: str,

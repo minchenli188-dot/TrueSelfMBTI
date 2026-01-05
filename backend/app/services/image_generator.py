@@ -6,7 +6,7 @@ The service uses a two-step process:
 1. Analyze conversation history to create a comprehensive user profile summary
 2. Generate a detailed Pop Mart style prompt based on the user's unique characteristics
 
-Watermark: All generated images include a "了解最真实的自己 • TrueSelfMBTI.com" watermark at the bottom center.
+Watermark: All generated images include a "了解最真实的自己 • TrueSelf16.com" watermark at the bottom center.
 """
 import logging
 import json
@@ -32,7 +32,7 @@ POP_MART_TEMPLATE = """(Vertical Composition) A cute 3d chibi {mbti_code} charac
 
 (Brand Base) The character is standing on a rounded {color_theme} platform base. On the front of the base, there is bold, distinct 3d text "{mbti_code}" embedded.
 
-(Watermark) At the bottom center of the image, display the text "Discover Your True Self • TrueSelfMBTI.com" in a medium-sized, elegant light gray font that blends subtly with the white background. The text should be readable but not visually dominant. No background box - just clean, understated text.
+(Watermark) At the bottom center of the image, display the text "Discover Your True Self • TrueSelf16.com" in a medium-sized, elegant light gray font that blends subtly with the white background. The text should be readable but not visually dominant. No background box - just clean, understated text.
 
 (Style Specs) Matte clay texture, soft studio lighting, clean white background, C4D render, octane render, 8k resolution, highly detailed, minimalist but information-rich. --ar 9:16"""
 

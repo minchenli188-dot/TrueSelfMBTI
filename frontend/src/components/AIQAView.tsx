@@ -127,7 +127,7 @@ export function AIQAView({ sessionId, resultData, onBack, depth }: AIQAViewProps
                     有什么想了解的吗？
                   </h2>
                   <p className="text-foreground-muted max-w-md mx-auto">
-                    我可以帮你深入解读你的 MBTI 结果
+                    我可以帮你深入解读你的人格测试结果
                     <span
                       className="font-mono font-semibold mx-1"
                       style={{ color: colors.primary }}

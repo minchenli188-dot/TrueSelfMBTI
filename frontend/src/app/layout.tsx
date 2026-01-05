@@ -25,11 +25,11 @@ const playfairDisplay = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "MBTI Assistant | 通过对话发现你的性格类型",
+  title: "TrueSelf16 | 通过对话发现你的性格类型",
   description:
-    "一个 AI 驱动的 MBTI 性格测评应用，通过自然对话而非选择题来深入理解你的性格。",
+    "一个 AI 驱动的16型人格测评应用，通过自然对话而非选择题来深入理解你的性格。",
   keywords: [
-    "MBTI",
+    "16型人格",
     "性格测试",
     "AI",
     "人格分析",
@@ -38,11 +38,11 @@ export const metadata: Metadata = {
     "荣格",
     "认知功能",
   ],
-  authors: [{ name: "MBTI Assistant Team" }],
+  authors: [{ name: "TrueSelf16 Team" }],
   openGraph: {
-    title: "MBTI Assistant | 发现你的真实自我",
+    title: "TrueSelf16 | 发现你的真实自我",
     description:
-      "告别无聊的选择题，通过自然对话让 AI 揭示你独特的 MBTI 类型。",
+      "告别无聊的选择题，通过自然对话让 AI 揭示你独特的人格类型。",
     type: "website",
   },
 };

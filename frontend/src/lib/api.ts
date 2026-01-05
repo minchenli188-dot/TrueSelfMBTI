@@ -280,3 +280,15 @@ export async function upgradeSession(
     body: JSON.stringify(data),
   });
 }
+
+export async function generateDemoImage(
+  mbtiType: string = "INFP",
+  gender: string = "female"
+): Promise<ImageGenerationResponse> {
+  return fetchAPI<ImageGenerationResponse>(
+    `/api/chat/demo-image?mbti_type=${mbtiType}&gender=${gender}`,
+    {
+      method: "POST",
+    }
+  );
+}
