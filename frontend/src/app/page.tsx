@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Sparkles, MessageCircle, Brain, RefreshCw, AlertCircle, PartyPopper, Loader2, Palette, MessagesSquare, Award, Shield } from "lucide-react";
@@ -17,7 +17,26 @@ import { AIQAView } from "@/components/AIQAView";
 import { FeedbackButton } from "@/components/FeedbackButton";
 import { useTheme } from "@/context/ThemeContext";
 
+// Wrapper component to handle Suspense for useSearchParams
 export default function HomePage() {
+  return (
+    <Suspense fallback={<HomePageLoading />}>
+      <HomePageContent />
+    </Suspense>
+  );
+}
+
+// Loading fallback component
+function HomePageLoading() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <Loader2 className="w-8 h-8 animate-spin text-foreground-muted" />
+    </div>
+  );
+}
+
+// Main page content
+function HomePageContent() {
   const [state, actions] = useChatSession();
   const { colors, setTheme } = useTheme();
   const analytics = useAnalytics();
