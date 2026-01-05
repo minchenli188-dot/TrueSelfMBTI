@@ -55,6 +55,14 @@ const GROUP_INFO: Record<string, { name: string; description: string }> = {
 // Color types for shallow mode (temperament colors)
 const COLOR_TYPES = ["Purple", "Green", "Blue", "Yellow"];
 
+// Color emoji mapping for share text
+const COLOR_EMOJI_MAP: Record<string, { emoji: string; name: string }> = {
+  Purple: { emoji: "🟣", name: "紫色" },
+  Green: { emoji: "🟢", name: "绿色" },
+  Blue: { emoji: "🔵", name: "蓝色" },
+  Yellow: { emoji: "🟡", name: "黄色" },
+};
+
 
 // Cognitive function descriptions for deep mode
 const COGNITIVE_FUNCTION_INFO: Record<string, { name: string; description: string }> = {
@@ -150,36 +158,45 @@ export function ResultView({
   };
 
   const handleCopy = async () => {
-    // Build result text based on depth mode
-    let resultText = "";
+    // Build share text based on depth mode
+    let shareText = "";
     
     if (isShallowMode) {
-      // Shallow mode: Show temperament color only
-      resultText = `我的气质类型：${resultData.type_name}（${groupInfo.name}）`;
-    } else if (isDeepMode) {
-      // Deep mode: Show full MBTI + cognitive stack + development level
-      const cognitiveStack = resultData.cognitive_stack 
-        ? `\n认知功能栈：${resultData.cognitive_stack.join(" → ")}`
-        : "";
-      const devLevel = resultData.development_level
-        ? `\n发展阶段：${DEVELOPMENT_LEVEL_INFO[resultData.development_level]?.title || resultData.development_level}`
-        : "";
-      resultText = `我的 MBTI 类型：${resultData.mbti_type}（${resultData.type_name}）${cognitiveStack}${devLevel}`;
-    } else {
-      // Standard mode: Show MBTI type and group
-      const cognitiveStack = resultData.cognitive_stack 
-        ? `\n认知功能栈：${resultData.cognitive_stack.join(" → ")}`
-        : "";
-      resultText = `我的 MBTI 类型：${resultData.mbti_type}（${resultData.type_name}）${cognitiveStack}`;
-    }
-    
-    const shareText = `和朋友聊天一样的 MBTI 测试
-聊着聊着，就发现了真正的自己
+      // Quick/Shallow mode: Show temperament color
+      const colorInfo = COLOR_EMOJI_MAP[resultData.mbti_type] || { emoji: "🌈", name: resultData.mbti_type };
+      shareText = `我刚用了一种
+像和朋友聊天一样的 MBTI 测试
 
-这是我的结果，你也来试试
-${resultText}
+这是我的性格颜色
+
+${colorInfo.emoji} ${colorInfo.name}
+
+你会是什么颜色？
+TrueSelfMBTI.com`;
+    } else if (isDeepMode) {
+      // Deep mode: Show MBTI type + development stage
+      const devLevelTitle = resultData.development_level
+        ? DEVELOPMENT_LEVEL_INFO[resultData.development_level]?.title || resultData.development_level
+        : "";
+      shareText = `不是所有 MBTI
+都在同一个阶段
+
+我的结果是
+
+${resultData.mbti_type} · ${groupInfo.name}
+发展阶段：${devLevelTitle}
 
 TrueSelfMBTI.com`;
+    } else {
+      // Standard mode: Show MBTI type and group
+      shareText = `和朋友聊天一样的 MBTI 测试
+聊着聊着，就发现了真正的自己
+
+我的结果是
+
+${resultData.mbti_type} · ${groupInfo.name}
+TrueSelfMBTI.com`;
+    }
 
     try {
       await navigator.clipboard.writeText(shareText);
