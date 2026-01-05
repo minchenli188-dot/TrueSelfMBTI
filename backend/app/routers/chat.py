@@ -461,24 +461,29 @@ async def finish_session(
             detail=f"Session {data.session_id} not found"
         )
     
-    if session.is_complete:
-        # Session already completed, return existing data
-        return FinishSessionResponse(
-            session_id=session.id,
-            mbti_type=session.current_prediction or "Unknown",
-            type_name=MBTI_TYPE_NAMES_ZH.get(session.current_prediction or "", session.current_prediction or "Unknown"),
-            group=MBTI_GROUPS.get(session.current_prediction or "", "analyst"),
-            confidence_score=session.confidence_score or 0,
-            analysis_report="",  # Report already shown
-            total_rounds=session.current_round,
-            cognitive_stack=session.get_cognitive_stack(),
-            development_level=session.development_level,
-        )
-    
     if not session.current_prediction or session.current_prediction == "Unknown":
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Assessment not ready to conclude. Please continue the conversation."
+        )
+    
+    # Check if this is a revisit with stored report
+    if session.is_complete and session.analysis_report:
+        # Return the stored report for consistency
+        logger.info(
+            "Session result revisited with stored report: id=%s, prediction=%s",
+            session.id, session.current_prediction
+        )
+        return FinishSessionResponse(
+            session_id=session.id,
+            mbti_type=session.current_prediction,
+            type_name=MBTI_TYPE_NAMES_ZH.get(session.current_prediction, session.current_prediction),
+            group=MBTI_GROUPS.get(session.current_prediction, "analyst"),
+            confidence_score=session.confidence_score or 0,
+            analysis_report=session.analysis_report,
+            total_rounds=session.current_round,
+            cognitive_stack=session.get_cognitive_stack(),
+            development_level=session.development_level,
         )
     
     # Build conversation history for report generation
@@ -491,6 +496,9 @@ async def finish_session(
             "content": msg.content,
         })
     
+    # Check if this is a first-time completion or a revisit without stored report
+    was_already_complete = session.is_complete
+
     # Generate the final analysis report
     try:
         analysis_report = await ai_service.generate_final_report(
@@ -509,19 +517,30 @@ async def finish_session(
             detail="Failed to generate analysis report. Please try again."
         )
     
-    # Mark session as complete
-    session.is_complete = True
-    session.is_active = False
+    # Save the generated report to the database for future visits
+    session.analysis_report = analysis_report
     
-    # Record for rate limiting
-    rate_limiter.record_message_sent(client_ip)
+    # Only update session completion state for first-time completions
+    if not was_already_complete:
+        # Mark session as complete
+        session.is_complete = True
+        session.is_active = False
+        
+        # Record for rate limiting
+        rate_limiter.record_message_sent(client_ip)
+        
+        logger.info(
+            "Session finished: id=%s, prediction=%s, confidence=%d%%",
+            session.id, session.current_prediction, session.confidence_score or 0
+        )
+    else:
+        logger.info(
+            "Session report regenerated and saved: id=%s, prediction=%s",
+            session.id, session.current_prediction
+        )
     
+    # Commit the changes (including saved report)
     await db.commit()
-    
-    logger.info(
-        "Session finished: id=%s, prediction=%s, confidence=%d%%",
-        session.id, session.current_prediction, session.confidence_score or 0
-    )
     
     return FinishSessionResponse(
         session_id=session.id,
@@ -685,9 +704,12 @@ async def generate_image(
     2. Conversation history analysis for personalized characteristics
     
     The image generation uses a two-step process:
-    - First, Gemini 3 Pro analyzes the conversation to extract user traits
+    - First, Gemini 3 Pro analyzes the conversation to extract user traits (saved for consistency)
     - Then, generates a personalized Pop Mart blind box style character
+    
+    The user profile is saved to the database so returning users get consistent images.
     """
+    import json as json_module
     from app.services.image_generator import image_generator
     
     # Validate session exists and load messages
@@ -711,27 +733,46 @@ async def generate_image(
             "image_url": None,
         }
     
-    # Build conversation history for profile analysis
-    conversation_history = []
-    for msg in sorted(session.messages, key=lambda m: m.created_at):
-        if msg.role == "system":
-            continue
-        conversation_history.append({
-            "role": "model" if msg.role == "model" else "user",
-            "content": msg.content,
-        })
-    
     # Get type name for better context
     type_name = MBTI_TYPE_NAMES_ZH.get(session.current_prediction, session.current_prediction)
     
+    # Check if we have a stored profile (for consistent image generation)
+    stored_profile = None
+    if session.image_profile:
+        try:
+            stored_profile = json_module.loads(session.image_profile)
+            logger.info("Using stored image profile for session %s", session_id)
+        except json_module.JSONDecodeError:
+            logger.warning("Failed to parse stored image profile, will regenerate")
+            stored_profile = None
+    
+    # Build conversation history for profile analysis (only if no stored profile)
+    conversation_history = None
+    if not stored_profile:
+        conversation_history = []
+        for msg in sorted(session.messages, key=lambda m: m.created_at):
+            if msg.role == "system":
+                continue
+            conversation_history.append({
+                "role": "model" if msg.role == "model" else "user",
+                "content": msg.content,
+            })
+    
     try:
         # Generate the personalized Pop Mart avatar
-        image_url = await image_generator.generate_personality_avatar(
+        image_url, profile = await image_generator.generate_personality_avatar(
             mbti_type=session.current_prediction,
             conversation_history=conversation_history,
             type_name=type_name,
             confidence=session.confidence_score or 85,
+            stored_profile=stored_profile,
         )
+        
+        # Save the profile if it was newly generated
+        if profile and not stored_profile:
+            session.image_profile = json_module.dumps(profile, ensure_ascii=False)
+            await db.commit()
+            logger.info("Saved new image profile for session %s", session_id)
         
         if image_url:
             return {

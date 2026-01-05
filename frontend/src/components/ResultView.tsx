@@ -16,6 +16,8 @@ import {
   FileText,
   Download,
   Printer,
+  Link,
+  Bookmark,
 } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import type { ResultData } from "@/hooks/useChatSession";
@@ -31,6 +33,7 @@ interface ResultViewProps {
   onUpgradeToDeep?: () => void;
   isUpgrading?: boolean;
   currentDepth?: "shallow" | "standard" | "deep";
+  sessionId?: string; // For generating shareable link
 }
 
 const GROUP_INFO: Record<string, { name: string; description: string }> = {
@@ -121,9 +124,11 @@ export function ResultView({
   onUpgradeToDeep,
   isUpgrading,
   currentDepth = "standard",
+  sessionId,
 }: ResultViewProps) {
   const { colors } = useTheme();
   const [copied, setCopied] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
   const [showReport, setShowReport] = useState(true); // Show report by default
   const reportRef = useRef<HTMLDivElement>(null);
 
@@ -155,6 +160,29 @@ export function ResultView({
 
   const handlePrintReport = () => {
     window.print();
+  };
+
+  // Copy result link for returning to Q&A
+  const handleCopyLink = async () => {
+    if (!sessionId) return;
+    
+    const resultUrl = `${window.location.origin}/results/${sessionId}`;
+    
+    try {
+      await navigator.clipboard.writeText(resultUrl);
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
+    } catch {
+      // Fallback for older browsers
+      const textarea = document.createElement("textarea");
+      textarea.value = resultUrl;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
+    }
   };
 
   const handleCopy = async () => {
@@ -729,12 +757,51 @@ TrueSelfMBTI.com`;
         </motion.div>
       )}
 
+      {/* Save Result Link - Prominent CTA for returning to Q&A */}
+      {sessionId && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.65 }}
+          className="w-full max-w-md mb-6"
+        >
+          <motion.button
+            onClick={handleCopyLink}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="relative w-full py-3.5 px-6 rounded-xl font-medium overflow-hidden glass border-2 transition-all duration-200"
+            style={{ 
+              borderColor: linkCopied ? '#22c55e' : `rgba(${colors.primaryRgb}, 0.3)`,
+              backgroundColor: linkCopied ? 'rgba(34, 197, 94, 0.1)' : undefined,
+            }}
+          >
+            <span className="relative flex items-center justify-center gap-2">
+              {linkCopied ? (
+                <>
+                  <Check className="w-5 h-5 text-green-500" />
+                  <span className="text-green-500">链接已复制！可收藏随时返回</span>
+                </>
+              ) : (
+                <>
+                  <Bookmark className="w-5 h-5" style={{ color: colors.primary }} />
+                  <span>保存结果链接</span>
+                  <span className="text-foreground-muted text-sm">（随时返回与 AI 对话）</span>
+                </>
+              )}
+            </span>
+          </motion.button>
+          <p className="text-center text-xs text-foreground-muted mt-2">
+            收藏此链接，以后可随时回来继续和 AI 聊你的性格
+          </p>
+        </motion.div>
+      )}
+
       {/* Action buttons */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.7 }}
-        className="flex items-center gap-4"
+        className="flex flex-wrap items-center justify-center gap-3"
       >
         {/* Copy result */}
         <button
@@ -817,9 +884,12 @@ function AnalysisReportContent({
     return cleaned;
   };
 
-  // Parse and render the content with simple formatting
+  // Parse and render the content with markdown-like formatting
   // The AI typically returns content with:
   // - **bold** text
+  // - ### Headers
+  // - --- Horizontal rules
+  // - * Bullet lists
   // - Numbered lists (1. 2. 3.)
   // - Line breaks for paragraphs
 
@@ -831,6 +901,41 @@ function AnalysisReportContent({
     const paragraphs = cleanedText.split(/\n\n+/);
 
     return paragraphs.map((paragraph, pIndex) => {
+      const trimmedParagraph = paragraph.trim();
+      
+      // Check for horizontal rule (---, ___, ***)
+      if (/^[-_*]{3,}$/.test(trimmedParagraph)) {
+        return (
+          <hr 
+            key={pIndex} 
+            className="my-6 border-t opacity-20"
+            style={{ borderColor: colors.primary }}
+          />
+        );
+      }
+      
+      // Check for header (### or ## or #)
+      const headerMatch = trimmedParagraph.match(/^(#{1,4})\s+(.+)$/);
+      if (headerMatch) {
+        const level = headerMatch[1].length;
+        const headerText = headerMatch[2];
+        const headerClasses = {
+          1: "text-xl font-bold mb-3",
+          2: "text-lg font-semibold mb-2",
+          3: "text-base font-semibold mb-2",
+          4: "text-sm font-medium mb-2",
+        };
+        return (
+          <h3 
+            key={pIndex} 
+            className={headerClasses[level as keyof typeof headerClasses] || headerClasses[3]}
+            style={{ color: colors.primary }}
+          >
+            {renderFormattedText(headerText)}
+          </h3>
+        );
+      }
+      
       // Check if this is a numbered list item
       const lines = paragraph.split(/\n/);
 
@@ -843,6 +948,33 @@ function AnalysisReportContent({
             // Clean any remaining broken characters at the start of lines
             trimmedLine = trimmedLine.replace(/^[?�\uFFFD]+\s*/, '');
             if (!trimmedLine) return null;
+            
+            // Check for horizontal rule in single line
+            if (/^[-_*]{3,}$/.test(trimmedLine)) {
+              return (
+                <hr 
+                  key={lIndex} 
+                  className="my-4 border-t opacity-20"
+                  style={{ borderColor: colors.primary }}
+                />
+              );
+            }
+            
+            // Check for header in line
+            const lineHeaderMatch = trimmedLine.match(/^(#{1,4})\s+(.+)$/);
+            if (lineHeaderMatch) {
+              const level = lineHeaderMatch[1].length;
+              const headerText = lineHeaderMatch[2];
+              return (
+                <h4 
+                  key={lIndex} 
+                  className={level <= 2 ? "text-base font-semibold mb-2 mt-4" : "text-sm font-medium mb-2 mt-3"}
+                  style={{ color: colors.primary }}
+                >
+                  {renderFormattedText(headerText)}
+                </h4>
+              );
+            }
 
             // Check for numbered list (1. text)
             const numberedMatch = trimmedLine.match(/^(\d+)\.\s+(.+)$/);
@@ -864,8 +996,24 @@ function AnalysisReportContent({
                 </div>
               );
             }
+            
+            // Check for bullet list (* text or - text)
+            const bulletMatch = trimmedLine.match(/^[*-]\s+(.+)$/);
+            if (bulletMatch) {
+              return (
+                <div key={lIndex} className="flex gap-3 mb-2 ml-1">
+                  <span
+                    className="flex-shrink-0 w-2 h-2 rounded-full mt-2"
+                    style={{ backgroundColor: colors.primary }}
+                  />
+                  <span className="flex-1 text-foreground-muted">
+                    {renderFormattedText(bulletMatch[1])}
+                  </span>
+                </div>
+              );
+            }
 
-            // Regular paragraph text (removed emoji bullet handling as AI is now instructed not to use them)
+            // Regular paragraph text
             return (
               <p key={lIndex} className="text-foreground-muted leading-relaxed mb-2 last:mb-0">
                 {renderFormattedText(trimmedLine)}

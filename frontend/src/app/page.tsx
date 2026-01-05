@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Sparkles, MessageCircle, Brain, RefreshCw, AlertCircle, PartyPopper, Loader2, Palette, MessagesSquare, Award, Shield } from "lucide-react";
 
@@ -20,9 +21,12 @@ export default function HomePage() {
   const [state, actions] = useChatSession();
   const { colors, setTheme } = useTheme();
   const analytics = useAnalytics();
+  const searchParams = useSearchParams();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [showQAView, setShowQAView] = useState(false);
+  const [pendingUpgrade, setPendingUpgrade] = useState<"standard" | "deep" | null>(null);
+  const upgradeTriggeredRef = useRef(false);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -30,6 +34,45 @@ export default function HomePage() {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [state.messages, state.isTyping]);
+
+  // Handle upgrade parameter from URL (from results page redirect)
+  useEffect(() => {
+    const upgradeParam = searchParams.get("upgrade");
+    if (upgradeParam === "standard" || upgradeParam === "deep") {
+      setPendingUpgrade(upgradeParam);
+    }
+  }, [searchParams]);
+
+  // Trigger upgrade when session is restored and ready
+  useEffect(() => {
+    // Only trigger once, when session is restored and finished
+    if (
+      pendingUpgrade &&
+      !upgradeTriggeredRef.current &&
+      state.isStarted &&
+      !state.isRestoring &&
+      state.isFinished &&
+      !state.isLoading
+    ) {
+      upgradeTriggeredRef.current = true;
+      
+      // Clear the URL parameter
+      if (typeof window !== "undefined") {
+        const url = new URL(window.location.href);
+        url.searchParams.delete("upgrade");
+        window.history.replaceState({}, "", url.toString());
+      }
+      
+      // Trigger the upgrade
+      if (pendingUpgrade === "standard") {
+        actions.upgradeToStandard();
+      } else if (pendingUpgrade === "deep") {
+        actions.upgradeToDeep();
+      }
+      
+      setPendingUpgrade(null);
+    }
+  }, [pendingUpgrade, state.isStarted, state.isRestoring, state.isFinished, state.isLoading, actions]);
   
   // Handle depth selection
   const handleDepthSelect = async (depth: AnalysisDepth) => {
@@ -293,6 +336,7 @@ export default function HomePage() {
               onUpgradeToDeep={handleUpgradeToDeep}
               isUpgrading={state.isLoading}
               currentDepth={state.depth || "standard"}
+              sessionId={state.sessionId || undefined}
             />
           </main>
           

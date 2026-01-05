@@ -416,7 +416,8 @@ class ImageGeneratorService:
         conversation_history: Optional[list[dict]] = None,
         type_name: str = "",
         confidence: int = 85,
-    ) -> Optional[str]:
+        stored_profile: Optional[dict] = None,
+    ) -> tuple[Optional[str], Optional[dict]]:
         """
         Generate a personalized Pop Mart style avatar image.
         
@@ -425,24 +426,35 @@ class ImageGeneratorService:
             conversation_history: Full conversation history for profile analysis
             type_name: Chinese name for the MBTI type
             confidence: Confidence score
+            stored_profile: Optional pre-analyzed profile to use (for consistency on return visits)
             
         Returns:
-            Base64 encoded image data URL or None if failed
+            Tuple of (Base64 encoded image data URL, profile dict) or (None, None) if failed
         """
         await self.initialize()
         
-        # Step 1: Analyze user profile if conversation history is provided
-        if conversation_history and len(conversation_history) > 2:
+        # Step 1: Use stored profile or analyze user profile
+        profile = None
+        is_new_profile = False
+        
+        if stored_profile:
+            # Use the stored profile for consistency
+            profile = stored_profile
+            logger.info("Using stored profile for %s", mbti_type)
+        elif conversation_history and len(conversation_history) > 2:
+            # Analyze conversation to create new profile
             profile = await self._analyze_user_profile(
                 mbti_type=mbti_type,
                 type_name=type_name or mbti_type,
                 confidence=confidence,
                 conversation_history=conversation_history,
             )
+            is_new_profile = True
         else:
             # Use default profile if no conversation history
             logger.info("No conversation history provided, using default profile for %s", mbti_type)
             profile = self._get_default_profile(mbti_type)
+            is_new_profile = True
         
         # Step 2: Build Pop Mart style prompt
         prompt = self._build_pop_mart_prompt(mbti_type, profile)
@@ -457,17 +469,18 @@ class ImageGeneratorService:
             if response.candidates and response.candidates[0].content.parts:
                 for part in response.candidates[0].content.parts:
                     if hasattr(part, 'inline_data') and part.inline_data:
-                        # Return base64 encoded image
+                        # Return base64 encoded image and the profile (for saving)
                         image_data = f"data:{part.inline_data.mime_type};base64,{base64.b64encode(part.inline_data.data).decode()}"
                         logger.info("Successfully generated Pop Mart avatar for %s", mbti_type)
-                        return image_data
+                        # Return profile only if it was newly generated
+                        return image_data, profile if is_new_profile else None
             
             logger.warning("No image data in response for %s", mbti_type)
-            return None
+            return None, None
             
         except Exception as e:
             logger.error("Failed to generate Pop Mart avatar for %s: %s", mbti_type, e)
-            return None
+            return None, None
     
     async def generate_result_card(
         self,

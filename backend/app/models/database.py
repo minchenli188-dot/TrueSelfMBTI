@@ -60,6 +60,12 @@ class Session(Base):
     cognitive_stack: Mapped[Optional[str]] = mapped_column(Text, nullable=True)  # JSON array
     development_level: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
     
+    # Stored analysis report (saved when first generated, reused on subsequent visits)
+    analysis_report: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
+    # Stored image profile (JSON, saved when first analyzed, reused for consistent image generation)
+    image_profile: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
     # Timestamps
     created_at: Mapped[datetime] = mapped_column(
         DateTime, 
@@ -224,6 +230,24 @@ async def init_db() -> None:
             # Add continue_precision_round column if it doesn't exist
             await conn.execute(
                 text("ALTER TABLE sessions ADD COLUMN continue_precision_round INTEGER")
+            )
+        except Exception:
+            # Column already exists, ignore
+            pass
+        
+        try:
+            # Add analysis_report column if it doesn't exist
+            await conn.execute(
+                text("ALTER TABLE sessions ADD COLUMN analysis_report TEXT")
+            )
+        except Exception:
+            # Column already exists, ignore
+            pass
+        
+        try:
+            # Add image_profile column if it doesn't exist
+            await conn.execute(
+                text("ALTER TABLE sessions ADD COLUMN image_profile TEXT")
             )
         except Exception:
             # Column already exists, ignore
