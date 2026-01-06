@@ -62,18 +62,130 @@ const JUNG_THEORY_CONTENT = {
   ],
 };
 
-// Cognitive functions content
+// Cognitive functions content with detailed descriptions
 const COGNITIVE_FUNCTIONS_CONTENT = {
   title: "认知功能分析",
   functions: [
-    { code: "Ni", name: "内倾直觉", desc: "洞察未来趋势，把握深层含义", color: "#88619a" },
-    { code: "Ne", name: "外倾直觉", desc: "发散思维，探索无限可能性", color: "#4298b4" },
-    { code: "Si", name: "内倾感觉", desc: "注重细节，依赖过往经验", color: "#33a474" },
-    { code: "Se", name: "外倾感觉", desc: "活在当下，追求感官体验", color: "#e4ae3a" },
-    { code: "Ti", name: "内倾思维", desc: "追求逻辑一致，深度分析", color: "#88619a" },
-    { code: "Te", name: "外倾思维", desc: "注重效率，善于组织执行", color: "#4298b4" },
-    { code: "Fi", name: "内倾情感", desc: "坚守内心价值，追求真实", color: "#33a474" },
-    { code: "Fe", name: "外倾情感", desc: "重视和谐，关注他人感受", color: "#e4ae3a" },
+    { 
+      code: "Ni", 
+      name: "内倾直觉", 
+      desc: "洞察未来趋势，把握深层含义", 
+      color: "#88619a",
+      fullName: "Introverted Intuition",
+      detailedDesc: "Ni 是一种深层的洞察力，能够在表象之下感知隐藏的模式和未来的可能性。使用 Ni 的人常常在不知不觉中得出结论，仿佛答案从潜意识浮现。",
+      characteristics: [
+        "能够预见未来趋势和可能的结果",
+        "善于把握事物的深层含义和象征",
+        "常有「灵光一现」的洞见时刻",
+        "倾向于一次只关注一个愿景"
+      ],
+      typicalTypes: "INTJ, INFJ 的主导功能"
+    },
+    { 
+      code: "Ne", 
+      name: "外倾直觉", 
+      desc: "发散思维，探索无限可能性", 
+      color: "#4298b4",
+      fullName: "Extraverted Intuition",
+      detailedDesc: "Ne 是一种向外探索的创意能量，能够快速看到多种可能性和联系。使用 Ne 的人善于头脑风暴，总能想到新点子和替代方案。",
+      characteristics: [
+        "思维发散，一个想法引出无数想法",
+        "善于看到事物间的隐藏联系",
+        "对新奇事物充满好奇和热情",
+        "适应变化，喜欢保持选择开放"
+      ],
+      typicalTypes: "ENTP, ENFP 的主导功能"
+    },
+    { 
+      code: "Si", 
+      name: "内倾感觉", 
+      desc: "注重细节，依赖过往经验", 
+      color: "#33a474",
+      fullName: "Introverted Sensing",
+      detailedDesc: "Si 是一种内化的感官记忆库，依赖过去的经验和详细的记忆来理解当下。使用 Si 的人注重传统、惯例和个人历史。",
+      characteristics: [
+        "拥有详细、生动的记忆",
+        "重视传统和已验证的方法",
+        "注重细节和具体事实",
+        "倾向于稳定和可预测的环境"
+      ],
+      typicalTypes: "ISTJ, ISFJ 的主导功能"
+    },
+    { 
+      code: "Se", 
+      name: "外倾感觉", 
+      desc: "活在当下，追求感官体验", 
+      color: "#e4ae3a",
+      fullName: "Extraverted Sensing",
+      detailedDesc: "Se 是一种对当下环境的高度敏感，活在当下，追求实际的感官体验。使用 Se 的人行动力强，善于应对即时情况。",
+      characteristics: [
+        "高度关注当下的物理环境",
+        "追求刺激和感官享受",
+        "反应敏捷，善于抓住机会",
+        "实践导向，喜欢动手体验"
+      ],
+      typicalTypes: "ESTP, ESFP 的主导功能"
+    },
+    { 
+      code: "Ti", 
+      name: "内倾思维", 
+      desc: "追求逻辑一致，深度分析", 
+      color: "#88619a",
+      fullName: "Introverted Thinking",
+      detailedDesc: "Ti 是一种内在的逻辑分析系统，追求理解事物运作的原理。使用 Ti 的人喜欢深入分析，构建精确的内在逻辑框架。",
+      characteristics: [
+        "追求内在逻辑的一致性",
+        "喜欢理解「为什么」而非「是什么」",
+        "独立思考，不盲从权威",
+        "善于发现逻辑漏洞和谬误"
+      ],
+      typicalTypes: "INTP, ISTP 的主导功能"
+    },
+    { 
+      code: "Te", 
+      name: "外倾思维", 
+      desc: "注重效率，善于组织执行", 
+      color: "#4298b4",
+      fullName: "Extraverted Thinking",
+      detailedDesc: "Te 是一种外向的逻辑组织能力，注重效率和可衡量的结果。使用 Te 的人善于制定计划、组织资源和实现目标。",
+      characteristics: [
+        "注重效率和实际成果",
+        "善于制定和执行计划",
+        "决策果断，目标导向",
+        "喜欢用数据和证据说话"
+      ],
+      typicalTypes: "ENTJ, ESTJ 的主导功能"
+    },
+    { 
+      code: "Fi", 
+      name: "内倾情感", 
+      desc: "坚守内心价值，追求真实", 
+      color: "#33a474",
+      fullName: "Introverted Feeling",
+      detailedDesc: "Fi 是一种深度的内在价值观系统，追求真实性和对内心的忠诚。使用 Fi 的人有强烈的道德指南针，重视个人信念。",
+      characteristics: [
+        "深度个人价值观导向",
+        "追求真实，难以接受虚伪",
+        "情感体验深刻而私密",
+        "同理心强，能感受他人情绪"
+      ],
+      typicalTypes: "INFP, ISFP 的主导功能"
+    },
+    { 
+      code: "Fe", 
+      name: "外倾情感", 
+      desc: "重视和谐，关注他人感受", 
+      color: "#e4ae3a",
+      fullName: "Extraverted Feeling",
+      detailedDesc: "Fe 是一种外向的情感协调能力，重视人际和谐和集体情绪。使用 Fe 的人善于理解和回应他人的情感需求。",
+      characteristics: [
+        "高度关注人际和谐",
+        "善于理解他人的情感需求",
+        "自然地表达情感",
+        "倾向于照顾集体利益"
+      ],
+      typicalTypes: "ENFJ, ESFJ 的主导功能"
+    },
   ],
 };
 
@@ -348,6 +460,14 @@ function JungTheoryDemo() {
 
 // Cognitive functions demo component
 function CognitiveFunctionsDemo() {
+  const [expandedFunc, setExpandedFunc] = useState<string | null>(null);
+
+  const handleFuncClick = (code: string) => {
+    setExpandedFunc(expandedFunc === code ? null : code);
+  };
+
+  const selectedFunc = COGNITIVE_FUNCTIONS_CONTENT.functions.find(f => f.code === expandedFunc);
+
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
@@ -359,29 +479,127 @@ function CognitiveFunctionsDemo() {
         <p className="text-sm text-white/60">8 大认知功能，揭示思维的底层逻辑</p>
       </div>
 
-      {/* Functions grid */}
-      <div className="grid grid-cols-2 gap-2.5 flex-1">
-        {COGNITIVE_FUNCTIONS_CONTENT.functions.map((func, index) => (
-          <motion.div
-            key={func.code}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: index * 0.05 }}
-            className="p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+      <AnimatePresence mode="wait">
+        {!expandedFunc ? (
+          // Functions grid view
+          <motion.div 
+            key="grid"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="grid grid-cols-2 gap-2.5 flex-1"
           >
-            <div className="flex items-center gap-2 mb-1.5">
-              <span
-                className="px-2 py-0.5 rounded text-xs font-mono font-semibold"
-                style={{ backgroundColor: `${func.color}30`, color: func.color }}
+            {COGNITIVE_FUNCTIONS_CONTENT.functions.map((func, index) => (
+              <motion.div
+                key={func.code}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.05 }}
+                onClick={() => handleFuncClick(func.code)}
+                className="p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer group"
               >
-                {func.code}
-              </span>
-              <span className="text-xs font-medium text-white/90">{func.name}</span>
-            </div>
-            <p className="text-xs text-white/50 leading-relaxed">{func.desc}</p>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span
+                    className="px-2 py-0.5 rounded text-xs font-mono font-semibold"
+                    style={{ backgroundColor: `${func.color}30`, color: func.color }}
+                  >
+                    {func.code}
+                  </span>
+                  <span className="text-xs font-medium text-white/90">{func.name}</span>
+                </div>
+                <p className="text-xs text-white/50 leading-relaxed">{func.desc}</p>
+                <div className="flex items-center justify-end mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span className="text-[10px] text-white/40">点击查看详情</span>
+                  <ChevronRight className="w-3 h-3 text-white/40 ml-0.5" />
+                </div>
+              </motion.div>
+            ))}
           </motion.div>
-        ))}
-      </div>
+        ) : selectedFunc && (
+          // Expanded detail view
+          <motion.div
+            key="detail"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
+            className="flex-1 flex flex-col"
+          >
+            {/* Back button */}
+            <button
+              onClick={() => setExpandedFunc(null)}
+              className="flex items-center gap-1 text-xs text-white/50 hover:text-white/80 transition-colors mb-4 self-start"
+            >
+              <ChevronRight className="w-4 h-4 rotate-180" />
+              <span>返回列表</span>
+            </button>
+
+            {/* Detail card */}
+            <div 
+              className="rounded-2xl p-5 flex-1"
+              style={{ 
+                background: `linear-gradient(135deg, ${selectedFunc.color}15, ${selectedFunc.color}05)`,
+                borderWidth: 1,
+                borderColor: `${selectedFunc.color}30`
+              }}
+            >
+              {/* Header */}
+              <div className="flex items-center gap-3 mb-4">
+                <span
+                  className="px-3 py-1.5 rounded-lg text-lg font-mono font-bold"
+                  style={{ backgroundColor: `${selectedFunc.color}30`, color: selectedFunc.color }}
+                >
+                  {selectedFunc.code}
+                </span>
+                <div>
+                  <h4 className="text-base font-semibold text-white">{selectedFunc.name}</h4>
+                  <p className="text-xs text-white/50">{selectedFunc.fullName}</p>
+                </div>
+              </div>
+
+              {/* Description */}
+              <p className="text-sm text-white/80 leading-relaxed mb-5">
+                {selectedFunc.detailedDesc}
+              </p>
+
+              {/* Characteristics */}
+              <div className="mb-4">
+                <h5 className="text-xs font-medium text-white/60 uppercase tracking-wide mb-2">
+                  核心特征
+                </h5>
+                <div className="space-y-2">
+                  {selectedFunc.characteristics.map((char, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.08 }}
+                      className="flex items-start gap-2 text-sm"
+                    >
+                      <span 
+                        className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: selectedFunc.color }}
+                      />
+                      <span className="text-white/70">{char}</span>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Typical types */}
+              <div 
+                className="px-3 py-2 rounded-lg"
+                style={{ backgroundColor: `${selectedFunc.color}15` }}
+              >
+                <p className="text-xs text-white/60">
+                  <span className="font-medium" style={{ color: selectedFunc.color }}>常见类型：</span>
+                  {' '}{selectedFunc.typicalTypes}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
