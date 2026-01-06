@@ -19,6 +19,7 @@ import {
   Link,
   Bookmark,
   Timer,
+  MessagesSquare,
 } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import type { ResultData } from "@/hooks/useChatSession";
@@ -35,6 +36,7 @@ interface ResultViewProps {
   isUpgrading?: boolean;
   currentDepth?: "shallow" | "standard" | "deep";
   sessionId?: string; // For generating shareable link
+  onViewConversation?: () => void; // View conversation history
 }
 
 const GROUP_INFO: Record<string, { name: string; description: string }> = {
@@ -126,6 +128,7 @@ export function ResultView({
   isUpgrading,
   currentDepth = "standard",
   sessionId,
+  onViewConversation,
 }: ResultViewProps) {
   const { colors } = useTheme();
   const [copied, setCopied] = useState(false);
@@ -829,6 +832,18 @@ TrueSelf16.com`;
         transition={{ delay: 0.7 }}
         className="flex flex-wrap items-center justify-center gap-3"
       >
+        {/* View conversation history */}
+        {onViewConversation && (
+          <button
+            onClick={onViewConversation}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl glass hover:bg-background-tertiary transition-colors"
+            style={{ borderColor: `rgba(${colors.primaryRgb}, 0.3)` }}
+          >
+            <MessagesSquare className="w-4 h-4" style={{ color: colors.primary }} />
+            <span>查看对话</span>
+          </button>
+        )}
+
         {/* Copy result */}
         <button
           onClick={handleCopy}

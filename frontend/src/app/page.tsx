@@ -48,6 +48,7 @@ function HomePageContent() {
   const [pendingUpgrade, setPendingUpgrade] = useState<"standard" | "deep" | null>(null);
   const upgradeTriggeredRef = useRef(false);
   const [activeFeatureDemo, setActiveFeatureDemo] = useState<FeatureKey | null>(null);
+  const [isReviewingConversation, setIsReviewingConversation] = useState(false);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -124,6 +125,16 @@ function HomePageContent() {
   // Handle going back from Q&A view
   const handleBackFromQA = () => {
     setShowQAView(false);
+  };
+
+  // Handle viewing conversation history from result page
+  const handleViewConversation = () => {
+    setIsReviewingConversation(true);
+  };
+
+  // Handle going back to result from conversation review
+  const handleBackToResult = () => {
+    setIsReviewingConversation(false);
   };
 
   // Handle upgrading to standard mode
@@ -361,6 +372,78 @@ function HomePageContent() {
     );
   }
 
+  // Render read-only conversation review mode
+  if (state.isFinished && state.resultData && isReviewingConversation) {
+    return (
+      <DynamicBackground>
+        <div className="h-screen flex flex-col">
+          {/* Header with back to result button */}
+          <header className="sticky top-0 z-50">
+            <div className="px-6 py-3 glass border-b border-border/50">
+              <div className="max-w-3xl mx-auto flex items-center justify-between">
+                <button
+                  onClick={handleBackToResult}
+                  className="flex items-center gap-2 text-foreground-muted hover:text-foreground transition-colors"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                  <span>返回结果</span>
+                </button>
+                <h1 className="font-display text-lg text-gradient">
+                  对话记录
+                </h1>
+                <div className="w-20" />
+              </div>
+            </div>
+          </header>
+
+          {/* Chat messages (read-only) */}
+          <main
+            ref={chatContainerRef}
+            className="flex-1 overflow-y-auto scrollbar-hide"
+          >
+            <div className="max-w-3xl mx-auto px-4 py-6 space-y-6">
+              <AnimatePresence mode="popLayout">
+                {state.messages.map((message) => (
+                  <ChatBubble
+                    key={message.id}
+                    role={message.role}
+                    content={message.content}
+                    timestamp={message.timestamp}
+                    isLatest={false}
+                  />
+                ))}
+              </AnimatePresence>
+
+              {/* Scroll anchor */}
+              <div ref={messagesEndRef} />
+            </div>
+          </main>
+
+          {/* Disabled input area with hint */}
+          <div className="w-full p-4 glass border-t border-border/50">
+            <div className="max-w-3xl mx-auto">
+              <div className="relative flex items-center justify-center p-4 rounded-2xl bg-background-secondary border border-border opacity-60">
+                <span className="text-foreground-muted text-sm">
+                  对话已结束，仅供查看
+                </span>
+              </div>
+              <div className="flex items-center justify-center mt-3">
+                <button
+                  onClick={handleBackToResult}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-medium transition-colors"
+                  style={{ backgroundColor: colors.primary }}
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>返回查看结果</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </DynamicBackground>
+    );
+  }
+
   // Render result view if finished
   if (state.isFinished && state.resultData) {
     return (
@@ -397,6 +480,7 @@ function HomePageContent() {
               isUpgrading={state.isLoading}
               currentDepth={state.depth || "standard"}
               sessionId={state.sessionId || undefined}
+              onViewConversation={handleViewConversation}
             />
           </main>
           

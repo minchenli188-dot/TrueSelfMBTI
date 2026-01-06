@@ -2,10 +2,11 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Loader2, AlertCircle, Home, RefreshCw, Play } from "lucide-react";
 
 import { DynamicBackground } from "@/components/chat/DynamicBackground";
+import { ChatBubble } from "@/components/chat/ChatBubble";
 import { ResultView } from "@/components/ResultView";
 import { AIQAView } from "@/components/AIQAView";
 import { FeedbackButton } from "@/components/FeedbackButton";
@@ -15,10 +16,19 @@ import {
   getSessionStatus,
   finishSession,
   generateImage as apiGenerateImage,
+  getChatHistory as apiGetChatHistory,
   type SessionStatusResponse,
   type FinishSessionResponse,
   APIError,
 } from "@/lib/api";
+
+// Chat message interface for displaying conversation
+interface ChatMessage {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  timestamp: Date;
+}
 
 // Session storage key (same as useChatSession)
 const SESSION_STORAGE_KEY = "mbti_session_id";
@@ -94,6 +104,11 @@ export default function ResultsPage() {
   // Image generation state
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null);
+
+  // Conversation view state
+  const [showConversation, setShowConversation] = useState(false);
+  const [conversationMessages, setConversationMessages] = useState<ChatMessage[]>([]);
+  const [isLoadingConversation, setIsLoadingConversation] = useState(false);
 
   // Check if this is a shallow mode result
   const isShallowMode = resultData ? COLOR_TYPES.includes(resultData.mbti_type) : false;
@@ -274,6 +289,40 @@ export default function ResultsPage() {
     setShowQAView(false);
   };
 
+  // Handle viewing conversation history
+  const handleViewConversation = useCallback(async () => {
+    if (conversationMessages.length > 0) {
+      // Already loaded, just show
+      setShowConversation(true);
+      return;
+    }
+
+    setIsLoadingConversation(true);
+    try {
+      const chatHistory = await apiGetChatHistory(sessionId);
+      
+      // Convert API messages to ChatMessage format
+      const messages: ChatMessage[] = chatHistory.messages.map((msg) => ({
+        id: `msg-${msg.id}`,
+        role: msg.role === "model" ? "assistant" : "user",
+        content: msg.content,
+        timestamp: new Date(msg.created_at),
+      }));
+
+      setConversationMessages(messages);
+      setShowConversation(true);
+    } catch (err) {
+      console.error("Failed to load conversation:", err);
+    } finally {
+      setIsLoadingConversation(false);
+    }
+  }, [sessionId, conversationMessages.length]);
+
+  // Handle going back from conversation view
+  const handleBackFromConversation = () => {
+    setShowConversation(false);
+  };
+
   // Handle restart (go to home to start new test)
   const handleRestart = () => {
     // Clear any stored session
@@ -347,6 +396,71 @@ export default function ResultsPage() {
               </button>
             </div>
           </motion.div>
+        </div>
+      </DynamicBackground>
+    );
+  }
+
+  // Conversation view (read-only)
+  if (showConversation && resultData) {
+    return (
+      <DynamicBackground>
+        <div className="h-screen flex flex-col">
+          {/* Header with back to result button */}
+          <header className="sticky top-0 z-50">
+            <div className="px-6 py-3 glass border-b border-border/50">
+              <div className="max-w-3xl mx-auto flex items-center justify-between">
+                <button
+                  onClick={handleBackFromConversation}
+                  className="flex items-center gap-2 text-foreground-muted hover:text-foreground transition-colors"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                  <span>返回结果</span>
+                </button>
+                <h1 className="font-display text-lg text-gradient">
+                  对话记录
+                </h1>
+                <div className="w-20" />
+              </div>
+            </div>
+          </header>
+
+          {/* Chat messages (read-only) */}
+          <main className="flex-1 overflow-y-auto scrollbar-hide">
+            <div className="max-w-3xl mx-auto px-4 py-6 space-y-6">
+              <AnimatePresence mode="popLayout">
+                {conversationMessages.map((message) => (
+                  <ChatBubble
+                    key={message.id}
+                    role={message.role}
+                    content={message.content}
+                    timestamp={message.timestamp}
+                    isLatest={false}
+                  />
+                ))}
+              </AnimatePresence>
+            </div>
+          </main>
+
+          {/* Disabled input area with hint */}
+          <div className="w-full p-4 glass border-t border-border/50">
+            <div className="max-w-3xl mx-auto">
+              <div className="relative flex items-center justify-center p-4 rounded-2xl bg-background-secondary border border-border opacity-60">
+                <span className="text-foreground-muted text-sm">
+                  对话已结束，仅供查看
+                </span>
+              </div>
+              <div className="flex items-center justify-center mt-3">
+                <button
+                  onClick={handleBackFromConversation}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-analyst to-diplomat text-white font-medium transition-colors"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>返回查看结果</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </DynamicBackground>
     );
@@ -442,11 +556,12 @@ export default function ResultsPage() {
           <main className="flex-1">
             <ResultView
               resultData={resultData}
-              isGeneratingImage={isGeneratingImage}
+              isGeneratingImage={isGeneratingImage || isLoadingConversation}
               generatedImageUrl={generatedImageUrl}
               onGenerateImage={handleGenerateImage}
               onRestart={handleRestart}
               onOpenQA={handleOpenQA}
+              onViewConversation={handleViewConversation}
               currentDepth={depth}
               sessionId={sessionId}
               // Enable upgrade options based on current depth
