@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     # API Keys
     GEMINI_API_KEY: str = ""
     NANO_BANANA_KEY: str = ""  # Reserved for future image generation
+    TRACKING_API_KEY: str = "mbti-track-2026-secret-key"  # API key for tracking endpoints
     
     # Database
     DATABASE_URL: str = "sqlite+aiosqlite:///./mbti_assistant.db"

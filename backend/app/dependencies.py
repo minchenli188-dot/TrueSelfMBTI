@@ -8,9 +8,43 @@ from datetime import datetime, timedelta
 from typing import Optional
 
 from fastapi import Depends, HTTPException, Request, status
+from fastapi.security import APIKeyHeader
 from pydantic import BaseModel
 
+from app.config import settings
+
 logger = logging.getLogger(__name__)
+
+# ============================================================
+# API Key Authentication
+# ============================================================
+
+api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
+
+
+async def verify_tracking_api_key(
+    api_key: str = Depends(api_key_header),
+) -> str:
+    """
+    Verify API key for tracking endpoints.
+    
+    Raises:
+        HTTPException: 401 if API key is missing or invalid
+    """
+    if not api_key:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={"error": "missing_api_key", "message": "API key required"},
+        )
+    
+    if api_key != settings.TRACKING_API_KEY:
+        logger.warning("Invalid tracking API key attempt")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={"error": "invalid_api_key", "message": "Invalid API key"},
+        )
+    
+    return api_key
 
 
 # ============================================================

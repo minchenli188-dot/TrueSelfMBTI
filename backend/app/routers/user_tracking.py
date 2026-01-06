@@ -17,6 +17,7 @@ from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from app.dependencies import verify_tracking_api_key
 from app.models.database import Session, Message, get_db
 from app.models.user_tracker import UserTracker
 
@@ -214,6 +215,7 @@ async def track_image_generation(
 @router.get("/users")
 async def get_all_users(
     db: AsyncSession = Depends(get_db),
+    _api_key: str = Depends(verify_tracking_api_key),
 ):
     """
     Get summary of all tracked users.
@@ -248,6 +250,7 @@ async def get_all_users(
 async def get_user_detail(
     anonymous_id: str,
     db: AsyncSession = Depends(get_db),
+    _api_key: str = Depends(verify_tracking_api_key),
 ):
     """
     Get detailed information for a specific user.
@@ -267,6 +270,7 @@ async def get_user_detail(
 async def get_user_conversations(
     anonymous_id: str,
     db: AsyncSession = Depends(get_db),
+    _api_key: str = Depends(verify_tracking_api_key),
 ):
     """
     Get all conversation histories for a specific user.
@@ -325,6 +329,7 @@ async def get_user_conversations(
 @router.get("/export")
 async def export_all_data(
     db: AsyncSession = Depends(get_db),
+    _api_key: str = Depends(verify_tracking_api_key),
 ):
     """
     Export all user data with conversation histories.
@@ -581,6 +586,7 @@ def analyze_user_journey(tracker) -> dict:
 @router.get("/stats")
 async def get_stats(
     db: AsyncSession = Depends(get_db),
+    _api_key: str = Depends(verify_tracking_api_key),
 ):
     """
     Get quick statistics for dashboard.

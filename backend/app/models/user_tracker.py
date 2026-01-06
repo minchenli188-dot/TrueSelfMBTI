@@ -93,3 +93,4 @@ class UserTracker(Base):
             "last_seen": self.last_seen.isoformat(),
         }
 
+
