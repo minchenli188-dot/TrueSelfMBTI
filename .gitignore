@@ -46,3 +46,6 @@ build/
 *.bak
 *.tmp
 .cache/
+
+# Local documentation with sensitive data
+TRACKING_SYSTEM.md
