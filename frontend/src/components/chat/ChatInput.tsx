@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, type KeyboardEvent, type FormEvent } from "react";
+import { useState, useRef, useEffect, type FormEvent } from "react";
 import { motion } from "framer-motion";
 import { Send, Loader2 } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
@@ -42,15 +42,6 @@ export function ChatInput({
     }
   };
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      if (value.trim() && !isLoading && !disabled) {
-        onSend();
-      }
-    }
-  };
-
   const canSend = value.trim().length > 0 && !isLoading && !disabled;
 
   return (
@@ -79,7 +70,6 @@ export function ChatInput({
             ref={textareaRef}
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            onKeyDown={handleKeyDown}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             disabled={disabled || isLoading}
@@ -120,7 +110,7 @@ export function ChatInput({
 
         {/* Character count and hints */}
         <div className="flex items-center justify-between mt-2 px-2 text-xs text-foreground-subtle">
-          <span>按 Enter 发送，Shift + Enter 换行</span>
+          <span>点击按钮发送</span>
           <span>{value.length} / 5000</span>
         </div>
       </div>

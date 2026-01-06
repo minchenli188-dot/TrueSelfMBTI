@@ -466,17 +466,21 @@ TrueSelf16.com`;
               className="flex items-center gap-3 hover:opacity-80 transition-opacity flex-1"
             >
               <FileText className="w-5 h-5" style={{ color: colors.primary }} />
-              <span className="font-medium">{isDeepMode ? "专业分析报告" : "详细分析报告"}</span>
-              <span 
-                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold"
-                style={{
-                  backgroundColor: "rgba(239, 68, 68, 0.15)",
-                  color: "#ef4444",
-                }}
-              >
-                <Timer className="w-2.5 h-2.5" />
-                限时免费
+              <span className="font-medium">
+                {isShallowMode ? "性格报告" : isDeepMode ? "专业分析报告" : "详细分析报告"}
               </span>
+              {!isShallowMode && (
+                <span 
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold"
+                  style={{
+                    backgroundColor: "rgba(239, 68, 68, 0.15)",
+                    color: "#ef4444",
+                  }}
+                >
+                  <Timer className="w-2.5 h-2.5" />
+                  限时免费
+                </span>
+              )}
               <motion.div
                 animate={{ rotate: showReport ? 180 : 0 }}
                 transition={{ duration: 0.2 }}

@@ -127,21 +127,6 @@ export function DepthSelector({ onSelect, isLoading }: DepthSelectorProps) {
                   >
                     {option.duration}
                   </span>
-                  {/* Free badge */}
-                  {option.badge && (
-                    <span
-                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold"
-                      style={{
-                        backgroundColor: option.badgeType === "free" ? "#22c55e20" : "#ef444420",
-                        color: option.badgeType === "free" ? "#22c55e" : "#ef4444",
-                        border: `1px solid ${option.badgeType === "free" ? "#22c55e40" : "#ef444440"}`,
-                      }}
-                    >
-                      {option.badgeType === "limited-free" && <Timer className="w-3 h-3" />}
-                      {option.badgeType === "free" && <Gift className="w-3 h-3" />}
-                      {option.badge}
-                    </span>
-                  )}
                 </div>
                 <p className="text-foreground-muted text-sm mb-2">
                   {option.subtitle}
