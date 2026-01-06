@@ -10,6 +10,7 @@ type FeatureKey = "natural-chat" | "jung-theory" | "cognitive-functions" | "pers
 interface FeatureDemoProps {
   feature: FeatureKey | null;
   onClose: () => void;
+  onStartTest: () => void;
 }
 
 // Simulated chat messages for the natural chat demo
@@ -649,7 +650,7 @@ function AIQADemo() {
 }
 
 // Main FeatureDemo component
-export function FeatureDemo({ feature, onClose }: FeatureDemoProps) {
+export function FeatureDemo({ feature, onClose, onStartTest }: FeatureDemoProps) {
   const renderContent = useCallback(() => {
     switch (feature) {
       case "natural-chat":
@@ -708,10 +709,14 @@ export function FeatureDemo({ feature, onClose }: FeatureDemoProps) {
               {/* Footer */}
               <div className="p-4 border-t border-white/10 bg-black/20">
                 <button
-                  onClick={onClose}
-                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#88619a] to-[#4298b4] text-white font-medium text-sm hover:opacity-90 transition-opacity"
+                  onClick={onStartTest}
+                  className="w-full py-3 rounded-xl font-semibold text-sm shadow-lg hover:opacity-90 transition-opacity"
+                  style={{
+                    background: "linear-gradient(135deg, #f59e0b 0%, #eab308 50%, #d97706 100%)",
+                    color: "#1a1a1a",
+                  }}
                 >
-                  开始测试体验
+                  开始测试（快速模式）
                 </button>
               </div>
             </div>

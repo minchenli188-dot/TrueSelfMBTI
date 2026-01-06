@@ -18,6 +18,7 @@ import {
   Printer,
   Link,
   Bookmark,
+  Timer,
 } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import type { ResultData } from "@/hooks/useChatSession";
@@ -465,7 +466,17 @@ TrueSelf16.com`;
               className="flex items-center gap-3 hover:opacity-80 transition-opacity flex-1"
             >
               <FileText className="w-5 h-5" style={{ color: colors.primary }} />
-              <span className="font-medium">详细分析报告</span>
+              <span className="font-medium">{isDeepMode ? "专业分析报告" : "详细分析报告"}</span>
+              <span 
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold"
+                style={{
+                  backgroundColor: "rgba(239, 68, 68, 0.15)",
+                  color: "#ef4444",
+                }}
+              >
+                <Timer className="w-2.5 h-2.5" />
+                限时免费
+              </span>
               <motion.div
                 animate={{ rotate: showReport ? 180 : 0 }}
                 transition={{ duration: 0.2 }}
@@ -633,16 +644,20 @@ TrueSelf16.com`;
 
             <span className="relative flex items-center justify-center gap-3">
               <MessageSquare className="w-5 h-5" />
-              <span>AI 深度解读</span>
+              <span>{isDeepMode ? "深度 AI 解读" : "AI 解读"}</span>
               <ArrowRight className="w-5 h-5" />
             </span>
 
-            {/* Hot badge */}
+            {/* Limited time free badge */}
             <span 
-              className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs text-white"
-              style={{ backgroundColor: colors.primary }}
+              className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-semibold inline-flex items-center gap-1"
+              style={{ 
+                backgroundColor: "rgba(239, 68, 68, 0.15)",
+                color: "#ef4444",
+              }}
             >
-              新功能
+              <Timer className="w-3 h-3" />
+              限时免费
             </span>
           </motion.button>
           <p className="text-center text-xs text-foreground-muted mt-2">
@@ -684,15 +699,22 @@ TrueSelf16.com`;
                 ) : (
                   <>
                     <ImageIcon className="w-5 h-5" />
-                    <span>生成我的灵魂形象</span>
+                    <span>生成我的专属画像</span>
                     <Sparkles className="w-5 h-5" />
                   </>
                 )}
               </span>
 
-              {/* Free badge */}
-              <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-white/20 text-xs">
-                免费
+              {/* Limited time free badge */}
+              <span 
+                className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-semibold inline-flex items-center gap-1"
+                style={{ 
+                  backgroundColor: "rgba(239, 68, 68, 0.15)",
+                  color: "#ef4444",
+                }}
+              >
+                <Timer className="w-3 h-3" />
+                限时免费
               </span>
             </motion.button>
           ) : (

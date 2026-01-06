@@ -333,7 +333,11 @@ function HomePageContent() {
               {/* Feature Demo Modal */}
               <FeatureDemo 
                 feature={activeFeatureDemo} 
-                onClose={() => setActiveFeatureDemo(null)} 
+                onClose={() => setActiveFeatureDemo(null)}
+                onStartTest={() => {
+                  setActiveFeatureDemo(null);
+                  handleDepthSelect("shallow");
+                }}
               />
 
             </div>

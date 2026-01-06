@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Clock, Zap, Brain, Sparkles, Palette, MessageSquare, FileText, Crown } from "lucide-react";
+import { Clock, Zap, Brain, Sparkles, Palette, MessageSquare, FileText, Crown, Gift, Timer } from "lucide-react";
 import type { AnalysisDepth } from "@/hooks/useChatSession";
 
 interface DepthSelectorProps {
@@ -24,6 +24,8 @@ const DEPTH_OPTIONS: Array<{
   color: string;
   description: string;
   features: FeatureTag[];
+  badge?: string;
+  badgeType?: "free" | "limited-free" | "limited-quantity-free";
 }> = [
   {
     depth: "shallow",
@@ -36,6 +38,8 @@ const DEPTH_OPTIONS: Array<{
     features: [
       { icon: FileText, label: "性格报告", tier: "basic" },
     ],
+    badge: "免费",
+    badgeType: "free",
   },
   {
     depth: "standard",
@@ -50,6 +54,8 @@ const DEPTH_OPTIONS: Array<{
       { icon: MessageSquare, label: "AI 解答", tier: "standard" },
       { icon: FileText, label: "详细报告", tier: "standard" },
     ],
+    badge: "免费",
+    badgeType: "free",
   },
   {
     depth: "deep",
@@ -60,30 +66,18 @@ const DEPTH_OPTIONS: Array<{
     color: "#88619a",
     description: "基于荣格理论，分析你的认知功能栈和发展阶段，获得最深入的洞察",
     features: [
-      { icon: Palette, label: "专属画像", tier: "pro" },
-      { icon: MessageSquare, label: "AI 解答", tier: "pro" },
+      { icon: Palette, label: "专属画像", tier: "standard" },
+      { icon: MessageSquare, label: "深度 AI 解答", tier: "pro" },
       { icon: Crown, label: "专业心理报告", tier: "pro" },
     ],
+    badge: "限时免费",
+    badgeType: "limited-free",
   },
 ];
 
 export function DepthSelector({ onSelect, isLoading }: DepthSelectorProps) {
   return (
     <div className="w-full max-w-3xl mx-auto px-6">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-12"
-      >
-        <h2 className="font-display text-3xl md:text-4xl mb-4">选择探索深度</h2>
-        <p className="text-foreground-muted max-w-xl mx-auto">
-          支持渐进式测试：先完成快速模式，查看结果后可继续升级到更深层次。
-          <br />
-          <span className="text-foreground-subtle text-sm">每次升级都会保留之前的对话，无需重新开始</span>
-        </p>
-      </motion.div>
-
       {/* Options */}
       <div className="grid gap-4 md:gap-6">
         {DEPTH_OPTIONS.map((option, index) => (
@@ -133,6 +127,21 @@ export function DepthSelector({ onSelect, isLoading }: DepthSelectorProps) {
                   >
                     {option.duration}
                   </span>
+                  {/* Free badge */}
+                  {option.badge && (
+                    <span
+                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold"
+                      style={{
+                        backgroundColor: option.badgeType === "free" ? "#22c55e20" : "#ef444420",
+                        color: option.badgeType === "free" ? "#22c55e" : "#ef4444",
+                        border: `1px solid ${option.badgeType === "free" ? "#22c55e40" : "#ef444440"}`,
+                      }}
+                    >
+                      {option.badgeType === "limited-free" && <Timer className="w-3 h-3" />}
+                      {option.badgeType === "free" && <Gift className="w-3 h-3" />}
+                      {option.badge}
+                    </span>
+                  )}
                 </div>
                 <p className="text-foreground-muted text-sm mb-2">
                   {option.subtitle}
@@ -154,13 +163,15 @@ export function DepthSelector({ onSelect, isLoading }: DepthSelectorProps) {
                         bg: `${option.color}20`,
                         color: option.color,
                         border: `${option.color}40`,
-                        badge: "Plus",
+                        badge: "限时免费",
+                        badgeColor: "#ef4444",
                       },
                       pro: {
                         bg: `${option.color}30`,
                         color: option.color,
                         border: `${option.color}60`,
-                        badge: "Pro",
+                        badge: "限时免费",
+                        badgeColor: "#ef4444",
                       },
                     };
                     const style = tierStyles[feature.tier || "basic"];
@@ -178,12 +189,13 @@ export function DepthSelector({ onSelect, isLoading }: DepthSelectorProps) {
                         {feature.label}
                         {style.badge && (
                           <span 
-                            className="text-[10px] px-1 py-0.5 rounded ml-0.5 font-semibold"
+                            className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded ml-0.5 font-semibold"
                             style={{
-                              backgroundColor: `${option.color}40`,
-                              color: option.color,
+                              backgroundColor: `${style.badgeColor}20`,
+                              color: style.badgeColor,
                             }}
                           >
+                            <Timer className="w-2.5 h-2.5" />
                             {style.badge}
                           </span>
                         )}
@@ -233,5 +245,3 @@ export function DepthSelector({ onSelect, isLoading }: DepthSelectorProps) {
     </div>
   );
 }
-
-
