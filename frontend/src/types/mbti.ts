@@ -100,3 +100,4 @@ export const MBTI_TYPE_NAMES: Record<MBTIType, string> = {
 
 
 
+
