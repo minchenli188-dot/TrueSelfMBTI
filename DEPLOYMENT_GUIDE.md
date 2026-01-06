@@ -1,7 +1,7 @@
 # TrueSelf16 - 部署与维护指南
 
 > **生产环境**: https://trueselfmbti.com  
-> **GitHub**: https://github.com/minchenli188-dot/TrueSelf16
+> **GitHub**: https://github.com/minchenli188-dot/TrueSelfMBTI
 
 ---
 
@@ -229,7 +229,7 @@ git push
 
 ```bash
 # SSH 连接服务器后
-cd ~/TrueSelf16
+cd ~/TrueSelfMBTI
 git pull
 ```
 
@@ -417,7 +417,7 @@ NEXT_PUBLIC_API_URL=https://trueselfmbti.com
 
 2. **检查 Gemini API Key**
    ```bash
-   cat ~/TrueSelf16/backend/.env
+   cat ~/TrueSelfMBTI/backend/.env
    ```
 
 3. **测试 API 是否正常**
@@ -429,13 +429,13 @@ NEXT_PUBLIC_API_URL=https://trueselfmbti.com
 
 1. **检查前端是否构建成功**
    ```bash
-   cd ~/TrueSelf16/frontend
+   cd ~/TrueSelfMBTI/frontend
    pnpm build
    ```
 
 2. **检查环境变量**
    ```bash
-   cat ~/TrueSelf16/frontend/.env.local
+   cat ~/TrueSelfMBTI/frontend/.env.local
    ```
 
 3. **重启前端**
@@ -478,7 +478,7 @@ NEXT_PUBLIC_API_URL=https://trueselfmbti.com
 pm2 status
 
 # 更新代码并重启
-cd ~/TrueSelf16 && git pull && cd frontend && pnpm build && pm2 restart all
+cd ~/TrueSelfMBTI && git pull && cd frontend && pnpm build && pm2 restart all
 
 # 查看最近日志
 pm2 logs --lines 50
@@ -491,12 +491,12 @@ curl https://trueselfmbti.com/health
 
 | 文件 | 路径 |
 |------|------|
-| 项目代码 | `~/TrueSelf16/` |
-| PM2 配置 | `~/TrueSelf16/ecosystem.config.js` |
+| 项目代码 | `~/TrueSelfMBTI/` |
+| PM2 配置 | `~/TrueSelfMBTI/ecosystem.config.js` |
 | Nginx 配置 | `/etc/nginx/sites-available/mbti` |
-| 后端环境变量 | `~/TrueSelf16/backend/.env` |
-| 前端环境变量 | `~/TrueSelf16/frontend/.env.local` |
-| SQLite 数据库 | `~/TrueSelf16/backend/mbti_assistant.db` |
+| 后端环境变量 | `~/TrueSelfMBTI/backend/.env` |
+| 前端环境变量 | `~/TrueSelfMBTI/frontend/.env.local` |
+| SQLite 数据库 | `~/TrueSelfMBTI/backend/mbti_assistant.db` |
 
 ---
 
