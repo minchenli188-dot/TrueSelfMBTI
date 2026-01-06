@@ -1,6 +1,6 @@
 # TrueSelf16 - 部署与维护指南
 
-> **生产环境**: https://trueselfmbti.com  
+> **生产环境**: https://trueself16.com  
 > **GitHub**: https://github.com/minchenli188-dot/TrueSelfMBTI
 
 ---
@@ -59,7 +59,7 @@ TrueSelf16 是一款 AI 驱动的 MBTI 性格测评应用，通过自然对话�
 
 | 项目 | 值 |
 |------|-----|
-| **域名** | trueselfmbti.com |
+| **域名** | trueself16.com |
 | **DNS 提供商** | Cloudflare |
 | **SSL 模式** | Flexible (Cloudflare 处理 HTTPS) |
 
@@ -342,7 +342,7 @@ DATABASE_URL=sqlite+aiosqlite:///./mbti_assistant.db
 
 ```env
 # 生产环境 API 地址
-NEXT_PUBLIC_API_URL=https://trueselfmbti.com
+NEXT_PUBLIC_API_URL=https://trueself16.com
 ```
 
 ### 重要提醒
@@ -484,7 +484,7 @@ cd ~/TrueSelfMBTI && git pull && cd frontend && pnpm build && pm2 restart all
 pm2 logs --lines 50
 
 # 测试 API
-curl https://trueselfmbti.com/health
+curl https://trueself16.com/health
 ```
 
 ### 重要文件位置
