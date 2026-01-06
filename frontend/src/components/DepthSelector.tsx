@@ -154,9 +154,9 @@ export function DepthSelector({ onSelect, isLoading }: DepthSelectorProps) {
                   {option.features.map((feature) => {
                     const tierStyles = {
                       basic: {
-                        bg: "rgba(255,255,255,0.06)",
-                        color: "rgba(255,255,255,0.6)",
-                        border: "rgba(255,255,255,0.08)",
+                        bg: "rgba(234, 179, 8, 0.15)",
+                        color: "#eab308",
+                        border: "rgba(234, 179, 8, 0.3)",
                         badge: null,
                       },
                       standard: {
