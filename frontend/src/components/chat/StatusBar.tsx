@@ -15,10 +15,28 @@ interface StatusBarProps {
 }
 
 // Development level translations
+// Note: AI may return variations, so we map common aliases
 const DEVELOPMENT_LEVEL_LABELS: Record<string, string> = {
+  // Standard keys
   Low: "发展初期",
   Medium: "平衡期",
   High: "成熟期",
+  // Common English variations
+  low: "发展初期",
+  medium: "平衡期",
+  high: "成熟期",
+  Early: "发展初期",
+  early: "发展初期",
+  Developing: "平衡期",
+  developing: "平衡期",
+  Mature: "成熟期",
+  mature: "成熟期",
+  Advanced: "成熟期",
+  advanced: "成熟期",
+  Beginner: "发展初期",
+  beginner: "发展初期",
+  Intermediate: "平衡期",
+  intermediate: "平衡期",
 };
 
 // Confidence level display configuration

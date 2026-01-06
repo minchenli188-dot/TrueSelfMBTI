@@ -83,7 +83,9 @@ const COGNITIVE_FUNCTION_INFO: Record<string, { name: string; description: strin
 };
 
 // Development level descriptions
-const DEVELOPMENT_LEVEL_INFO: Record<string, { title: string; description: string; characteristics: string[] }> = {
+// Note: AI may return variations like "Mature", "Developing", "Early" etc.
+// We normalize these to our standard keys
+const DEVELOPMENT_LEVEL_DATA: Record<string, { title: string; description: string; characteristics: string[] }> = {
   Low: {
     title: "发展初期",
     description: "主要依赖主导功能，辅助和第三功能尚在发展中。在压力下可能表现出劣势功能的负面特征。",
@@ -115,6 +117,49 @@ const DEVELOPMENT_LEVEL_INFO: Record<string, { title: string; description: strin
     ]
   },
 };
+
+// Normalize various AI response values to our standard keys
+const DEVELOPMENT_LEVEL_ALIASES: Record<string, string> = {
+  // Standard keys
+  "Low": "Low",
+  "Medium": "Medium", 
+  "High": "High",
+  // Common English variations
+  "low": "Low",
+  "medium": "Medium",
+  "high": "High",
+  "Early": "Low",
+  "early": "Low",
+  "Developing": "Medium",
+  "developing": "Medium",
+  "Mature": "High",
+  "mature": "High",
+  "Advanced": "High",
+  "advanced": "High",
+  "Beginner": "Low",
+  "beginner": "Low",
+  "Intermediate": "Medium",
+  "intermediate": "Medium",
+  // Chinese variations
+  "初期": "Low",
+  "发展初期": "Low",
+  "平衡期": "Medium",
+  "平衡发展期": "Medium",
+  "成熟期": "High",
+  "成熟整合期": "High",
+};
+
+// Helper function to get development level info
+function getDevelopmentLevelInfo(level: string): { title: string; description: string; characteristics: string[] } | null {
+  const normalizedKey = DEVELOPMENT_LEVEL_ALIASES[level];
+  if (normalizedKey) {
+    return DEVELOPMENT_LEVEL_DATA[normalizedKey];
+  }
+  return null;
+}
+
+// Keep for backwards compatibility
+const DEVELOPMENT_LEVEL_INFO = DEVELOPMENT_LEVEL_DATA;
 
 export function ResultView({
   resultData,
@@ -208,7 +253,7 @@ TrueSelf16.com`;
     } else if (isDeepMode) {
       // Deep mode: Show MBTI type + development stage
       const devLevelTitle = resultData.development_level
-        ? DEVELOPMENT_LEVEL_INFO[resultData.development_level]?.title || resultData.development_level
+        ? getDevelopmentLevelInfo(resultData.development_level)?.title || resultData.development_level
         : "";
       shareText = `不是所有人格类型
 都在同一个阶段
@@ -415,7 +460,7 @@ TrueSelf16.com`;
             发展阶段分析
           </h3>
           {(() => {
-            const levelInfo = DEVELOPMENT_LEVEL_INFO[resultData.development_level];
+            const levelInfo = getDevelopmentLevelInfo(resultData.development_level);
             if (!levelInfo) return null;
             return (
               <div>

@@ -44,6 +44,34 @@ export interface PresetQuestion {
 
 export type AnalysisDepth = "shallow" | "standard" | "deep";
 
+// Normalize development level to Chinese display
+const DEVELOPMENT_LEVEL_DISPLAY: Record<string, string> = {
+  // Standard keys
+  Low: "发展初期",
+  Medium: "平衡期",
+  High: "成熟期",
+  // Common English variations
+  low: "发展初期",
+  medium: "平衡期",
+  high: "成熟期",
+  Early: "发展初期",
+  early: "发展初期",
+  Developing: "平衡期",
+  developing: "平衡期",
+  Mature: "成熟期",
+  mature: "成熟期",
+  Advanced: "成熟期",
+  advanced: "成熟期",
+  Beginner: "发展初期",
+  beginner: "发展初期",
+  Intermediate: "平衡期",
+  intermediate: "平衡期",
+};
+
+function getDevelopmentLevelDisplay(level: string): string {
+  return DEVELOPMENT_LEVEL_DISPLAY[level] || level;
+}
+
 export function getPresetQuestions(
   resultData: ResultData | null,
   depth?: AnalysisDepth
@@ -71,10 +99,11 @@ export function getPresetQuestions(
 
   // Development level (only for deep mode)
   if (hasDevelopmentLevel && isDeepMode) {
+    const displayLevel = getDevelopmentLevelDisplay(resultData.development_level!);
     questions.push({
       id: "development",
       label: "解读发展阶段",
-      question: `我的人格发展阶段是"${resultData.development_level}"，请帮我解读这意味着什么？我目前的发展状态如何？有什么建议可以帮助我进一步成长？`,
+      question: `我的人格发展阶段是"${displayLevel}"，请帮我解读这意味着什么？我目前的发展状态如何？有什么建议可以帮助我进一步成长？`,
       icon: "📈",
     });
   }
