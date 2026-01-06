@@ -9,6 +9,9 @@ import {
   upgradeSession as apiUpgradeSession,
   getChatHistory as apiGetChatHistory,
   getSessionStatus as apiGetSessionStatus,
+  trackSession as apiTrackSession,
+  trackCompletion as apiTrackCompletion,
+  trackImageGeneration as apiTrackImageGeneration,
   type StartSessionResponse,
   type SendMessageResponse,
   type FinishSessionResponse,
@@ -17,7 +20,7 @@ import {
 } from "@/lib/api";
 import { useTheme } from "@/context/ThemeContext";
 import { useToast } from "@/context/ToastContext";
-import { extractUserInsights } from "@/lib/analytics";
+import { extractUserInsights, getAnonymousId, getDeviceInfo } from "@/lib/analytics";
 
 // ============================================================
 // Session Persistence (localStorage)
@@ -425,6 +428,20 @@ export function useChatSession(): [ChatSessionState, ChatSessionActions] {
         // Save session ID to localStorage for persistence across refreshes
         saveSessionToStorage(response.session_id);
 
+        // Track session start for user analytics
+        const anonymousId = getAnonymousId();
+        const deviceInfo = getDeviceInfo();
+        apiTrackSession({
+          anonymous_id: anonymousId,
+          session_id: response.session_id,
+          mode: depth,
+          device_type: deviceInfo.device_type,
+          browser: deviceInfo.browser,
+          os: deviceInfo.os,
+        }).catch((err) => {
+          console.warn("Failed to track session:", err);
+        });
+
         showInfo("会话已开始", `已选择${depth === "shallow" ? "快速" : depth === "standard" ? "标准" : "深度"}模式`);
       } catch (err) {
         setState((prev) => ({ ...prev, isLoading: false }));
@@ -596,6 +613,12 @@ export function useChatSession(): [ChatSessionState, ChatSessionActions] {
           generatedImageUrl: response.image_url,
         }));
         showSuccess("生成成功", response.message);
+        
+        // Track image generation for analytics
+        const anonymousId = getAnonymousId();
+        apiTrackImageGeneration(anonymousId).catch((err) => {
+          console.warn("Failed to track image generation:", err);
+        });
       } else if (response.status === "pending") {
         showInfo("生成中", response.message);
         setState((prev) => ({ ...prev, isGeneratingImage: false }));
@@ -649,6 +672,17 @@ const resultData: ResultData = {
       }));
 
       showSuccess("测试完成！", `你的性格类型是 ${response.mbti_type}`);
+      
+      // Track session completion for analytics
+      const anonymousId = getAnonymousId();
+      apiTrackCompletion({
+        anonymous_id: anonymousId,
+        session_id: state.sessionId,
+        mbti_result: response.mbti_type,
+        mode: state.depth || "standard",
+      }).catch((err) => {
+        console.warn("Failed to track completion:", err);
+      });
       
       // Extract user insights in background (non-blocking)
       extractUserInsights(state.sessionId).catch((err) => {
@@ -716,6 +750,20 @@ const resultData: ResultData = {
         progress: Math.round((prev.currentRound / 15) * 100),
       }));
 
+      // Track mode upgrade for analytics
+      const anonymousId = getAnonymousId();
+      const deviceInfo = getDeviceInfo();
+      apiTrackSession({
+        anonymous_id: anonymousId,
+        session_id: state.sessionId,
+        mode: "standard",
+        device_type: deviceInfo.device_type,
+        browser: deviceInfo.browser,
+        os: deviceInfo.os,
+      }).catch((err) => {
+        console.warn("Failed to track upgrade:", err);
+      });
+
       showSuccess("升级成功", response.message);
     } catch (err) {
       setState((prev) => ({ ...prev, isLoading: false, isTyping: false }));
@@ -773,6 +821,20 @@ const resultData: ResultData = {
         // Recalculate progress for deep mode (30 total questions)
         progress: Math.round((prev.currentRound / 30) * 100),
       }));
+
+      // Track mode upgrade for analytics
+      const anonymousId = getAnonymousId();
+      const deviceInfo = getDeviceInfo();
+      apiTrackSession({
+        anonymous_id: anonymousId,
+        session_id: state.sessionId,
+        mode: "deep",
+        device_type: deviceInfo.device_type,
+        browser: deviceInfo.browser,
+        os: deviceInfo.os,
+      }).catch((err) => {
+        console.warn("Failed to track upgrade:", err);
+      });
 
       showSuccess("升级成功", response.message);
     } catch (err) {

@@ -32,6 +32,9 @@ class Session(Base):
         default=lambda: str(uuid.uuid4())
     )
     
+    # User tracking - links session to unique user
+    anonymous_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True, index=True)
+    
     # Session configuration
     depth: Mapped[str] = mapped_column(String(20), default="standard")  # shallow/standard/deep
     language: Mapped[str] = mapped_column(String(10), default="zh-CN")
@@ -221,6 +224,7 @@ async def init_db() -> None:
     """Initialize database tables."""
     # Import analytics models to ensure they're registered with Base
     from app.models.analytics import UserProfile, UserEvent, UserFeedback, UserInsight
+    from app.models.user_tracker import UserTracker
     
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
@@ -248,6 +252,15 @@ async def init_db() -> None:
             # Add image_profile column if it doesn't exist
             await conn.execute(
                 text("ALTER TABLE sessions ADD COLUMN image_profile TEXT")
+            )
+        except Exception:
+            # Column already exists, ignore
+            pass
+        
+        try:
+            # Add anonymous_id column for user tracking
+            await conn.execute(
+                text("ALTER TABLE sessions ADD COLUMN anonymous_id VARCHAR(64)")
             )
         except Exception:
             # Column already exists, ignore

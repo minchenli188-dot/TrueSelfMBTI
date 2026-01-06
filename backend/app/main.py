@@ -173,7 +173,7 @@ async def get_rate_limit_info(request: Request):
 # API Routers
 # ============================================================
 
-from app.routers import chat, analytics
+from app.routers import chat, analytics, user_tracking
 
 # Main chat API - handles sessions, messages, and image generation
 app.include_router(
@@ -187,6 +187,13 @@ app.include_router(
     analytics.router,
     prefix="/api/analytics",
     tags=["Analytics"],
+)
+
+# User Tracking API - simplified user journey tracking
+app.include_router(
+    user_tracking.router,
+    prefix="/api/tracking",
+    tags=["User Tracking"],
 )
 
 

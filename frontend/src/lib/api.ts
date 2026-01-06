@@ -292,3 +292,50 @@ export async function generateDemoImage(
     }
   );
 }
+
+// ============================================================
+// User Tracking API Functions
+// ============================================================
+
+export interface TrackSessionRequest {
+  anonymous_id: string;
+  session_id: string;
+  mode: string;
+  device_type?: string;
+  browser?: string;
+  os?: string;
+}
+
+export interface TrackCompletionRequest {
+  anonymous_id: string;
+  session_id: string;
+  mbti_result: string;
+  mode: string;
+}
+
+export async function trackSession(
+  data: TrackSessionRequest
+): Promise<{ status: string; total_sessions: number }> {
+  return fetchAPI("/api/tracking/track-session", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function trackCompletion(
+  data: TrackCompletionRequest
+): Promise<{ status: string }> {
+  return fetchAPI("/api/tracking/track-completion", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function trackImageGeneration(
+  anonymousId: string
+): Promise<{ status: string }> {
+  return fetchAPI("/api/tracking/track-image", {
+    method: "POST",
+    body: JSON.stringify({ anonymous_id: anonymousId }),
+  });
+}
