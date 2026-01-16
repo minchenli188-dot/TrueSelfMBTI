@@ -200,7 +200,7 @@
 
   /* Hide non-essential elements */
   header,
-  .print\\:hidden,
+  [class*="print:hidden"],
   button:not(.print-keep),
   nav,
   footer {

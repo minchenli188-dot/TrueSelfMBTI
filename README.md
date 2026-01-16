@@ -28,7 +28,8 @@ An AI-powered 16 personality type assessment application that understands your p
 - **Image Generation**: Gemini 3 Pro Image
 
 ### Frontend
-- **Framework**: Next.js 15 (App Router)
+- **Framework**: Next.js 16 (App Router + Turbopack)
+- **UI Library**: React 19.2
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
 - **Animation**: Framer Motion
